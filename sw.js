@@ -2,7 +2,7 @@
  * Cache-first for own assets · network for everything else.
  * Bumps cache version on script edits — change CACHE_VERSION to invalidate.
  */
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.1.0';
 const CACHE_NAME = 'section-9-' + CACHE_VERSION;
 
 const ASSETS = [
@@ -40,21 +40,19 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
-  // Same-origin: cache-first then network, write-through to cache.
+  // Same-origin: NETWORK-FIRST so updates land immediately, fallback to cache when offline.
+  // Previously cache-first kept serving stale code after deploys.
   if (url.origin === self.location.origin) {
     event.respondWith(
-      caches.match(req).then((cached) => {
-        if (cached) return cached;
-        return fetch(req)
-          .then((resp) => {
-            if (resp && resp.ok) {
-              const copy = resp.clone();
-              caches.open(CACHE_NAME).then((c) => c.put(req, copy));
-            }
-            return resp;
-          })
-          .catch(() => caches.match('./index.html'));
-      })
+      fetch(req)
+        .then((resp) => {
+          if (resp && resp.ok) {
+            const copy = resp.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(req, copy));
+          }
+          return resp;
+        })
+        .catch(() => caches.match(req).then((c) => c || caches.match('./index.html')))
     );
     return;
   }

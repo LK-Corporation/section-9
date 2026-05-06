@@ -2462,6 +2462,7 @@
     font-size: 9px;
     letter-spacing: 2px;
     color: var(--gray-dim);
+    pointer-events: none; /* don't trap clicks meant for the overlay background */
   }
 
   /* ===== KOJIMA cinematic ===== */
@@ -3420,10 +3421,19 @@
     .cmd-help-btn { min-height: 36px; padding: 6px 10px; }
 
     /* Squad cards: drop heavy stat bars on phones, keep on small tablets */
-    .cards { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
-    .card { min-height: 44px; }
+    .cards {
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      grid-auto-rows: auto;
+    }
+    .card { min-height: 44px; word-break: break-word; }
+    .card-id, .card-name, .card-row { overflow-wrap: break-word; word-break: break-word; }
     .tachi { grid-template-columns: 1fr 1fr; gap: 5px; }
-    .tachi-card { min-height: 44px; }
+    .tachi-card { min-height: 44px; word-break: break-word; }
+    .tachi-name, .tachi-line, .tachi-ops { overflow-wrap: break-word; }
+
+    /* Topology SVG: cap height so it doesn't dominate the column */
+    .panel.topology { min-height: 240px; max-height: 320px; }
+    .panel.topology svg { max-height: 280px; }
 
     /* Compact panels on right column */
     .panel { padding: 8px 12px; }
