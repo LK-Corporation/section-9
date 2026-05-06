@@ -3341,3 +3341,159 @@
     .rain-col { display: none; }
     .grid { grid-template-columns: 1fr 280px; }
   }
+
+  /* ===== Mobile (≤900px) — vertical stack, no HUD lock ===== */
+  @media (max-width: 900px) {
+    /* Allow scroll on the whole page */
+    html, body {
+      overflow: auto;
+      height: auto;
+      min-height: 100vh;
+      cursor: default;
+    }
+    body::after { display: none; } /* drop the radial vignette */
+
+    .hud {
+      height: auto;
+      min-height: 100vh;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    /* Placard becomes a vertical stack */
+    .placard {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 6px;
+      padding: 8px 12px 6px;
+      height: auto;
+    }
+    .placard::before, .placard::after { display: none; }
+    .placard-l { gap: 8px; }
+    .placard-title { font-size: 14px; letter-spacing: 3px; }
+    .placard-sub { font-size: 8px; letter-spacing: 1px; }
+    .placard-sub small { display: none; }
+    .placard-c { display: none; } /* hide alert widget on mobile, save vertical space */
+    .placard-r { gap: 8px; flex-wrap: wrap; }
+    #liveTime { font-size: 9px; }
+    .placard-nav {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      width: 100%;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .placard-nav::-webkit-scrollbar { height: 2px; background: transparent; }
+    .placard-nav::-webkit-scrollbar-thumb { background: var(--green-dim); }
+    .placard-nav a { white-space: nowrap; flex-shrink: 0; }
+
+    /* Grid: single column, right panels stack below center */
+    .grid {
+      grid-template-columns: 1fr;
+      overflow: visible;
+    }
+    .right {
+      border-left: none;
+      border-top: 1px solid var(--green-dim);
+      overflow: visible;
+    }
+    .center {
+      padding: 12px;
+      overflow: visible;
+    }
+
+    /* Cmd panel sticky to top of right column for easier reach */
+    .panel.cmd-panel {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg2);
+    }
+    .cmd-input { font-size: 14px; } /* avoid iOS zoom on focus */
+    .cmd-row { padding: 8px 10px; min-height: 44px; }
+    .cmd-help-btn { min-height: 36px; padding: 6px 10px; }
+
+    /* Squad cards: drop heavy stat bars on phones, keep on small tablets */
+    .cards { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+    .card { min-height: 44px; }
+    .tachi { grid-template-columns: 1fr 1fr; gap: 5px; }
+    .tachi-card { min-height: 44px; }
+
+    /* Compact panels on right column */
+    .panel { padding: 8px 12px; }
+    .ops-log { height: 130px; }
+    .panel.topology { min-height: 220px; }
+
+    /* Audio toggle smaller and out of the way */
+    .audio-toggle {
+      top: auto;
+      bottom: 12px;
+      left: 12px;
+      font-size: 7px;
+      padding: 4px 7px;
+      min-height: 36px;
+    }
+
+    /* Hit-target minimums on interactive cards */
+    .lp-clickable, .stat-cell.clickable, .codec-row[role="button"],
+    .briefing-status, .ph-btn, .title-btn {
+      min-height: 36px;
+    }
+
+    /* Footer compact */
+    .quotes { padding: 6px 12px; font-size: 10px; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .footer-motto { display: none; }
+    .quote-text { text-align: center; }
+
+    /* Boot scaled for phones */
+    .boot-tw { font-size: 14px; min-height: 80px; }
+    .boot-title-stamp { font-size: 36px; letter-spacing: 4px; }
+    .boot-nerv-glitch { font-size: 36px; letter-spacing: 6px; }
+    .boot-subtitle { font-size: 10px; letter-spacing: 2px; padding: 0 12px; text-align: center; }
+    .boot-tagline { font-size: 9px; letter-spacing: 3px; }
+    .boot-progress-list { width: 92vw; font-size: 11px; }
+    .boot-prog-row { grid-template-columns: 110px 1fr 44px; gap: 6px; }
+    .boot-corners { inset: 12px; }
+
+    /* Modal scale-down for phones */
+    .dossier-card, .help-card, .char-d-card, .page-modal-card {
+      width: 100%;
+      max-width: calc(100vw - 24px);
+      padding: 18px 16px;
+      max-height: calc(100vh - 24px);
+    }
+    .char-d-grid { grid-template-columns: 1fr; gap: 14px; }
+    .char-d-portrait { font-size: 13px; padding: 10px 14px; }
+    .char-d-name { font-size: 26px; letter-spacing: 3px; }
+    .help-grid { grid-template-columns: 1fr; }
+
+    /* MGS alert mark smaller */
+    .mgs-alert .alert-mark { font-size: 120px; }
+    .you-died-text { font-size: 36px; letter-spacing: 6px; }
+
+    /* Codec call bottom-anchored on mobile */
+    .codec-call {
+      bottom: 70px;
+      width: calc(100vw - 24px);
+    }
+
+    /* SEELE monoliths smaller */
+    .seele-monolith { width: 50px; height: 84px; }
+    .seele-monolith .num { font-size: 22px; }
+
+    /* Three.js dive overlay info compact */
+    .dive-info { font-size: 9px; }
+    .dive-exit { font-size: 8px; padding: 6px 8px; min-height: 36px; }
+  }
+
+  @media (max-width: 600px) {
+    .placard-r { font-size: 9px; }
+    .placard-gh span { display: none; } /* keep only the github icon */
+    .placard-title { font-size: 13px; letter-spacing: 2px; }
+    .placard-sub { display: block; }
+    .cards { grid-template-columns: 1fr; }
+    .tachi { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
+    .stat-cell { padding: 5px 6px; }
+    .stat-cell .sval { font-size: 13px; }
+    .stat-cell .slbl { font-size: 7px; }
+  }

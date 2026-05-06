@@ -1125,6 +1125,12 @@ function loadThreeJS(){
 
 function triggerDive(){
   if (diveActive) return;
+  // WebGL scene + Three.js (~600KB) is too heavy for phones — degrade gracefully
+  if (window.innerWidth < 900 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){
+    showEgg('DEEP DIVE // DESKTOP ONLY · INSUFFICIENT BANDWIDTH');
+    beep(220, 0.3, 'sawtooth');
+    return;
+  }
   diveActive = true;
   const overlay = document.createElement('div');
   overlay.className = 'dive-overlay';
