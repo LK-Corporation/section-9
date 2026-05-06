@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SECTION 9">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23E6792A' d='M32 4C46 14 56 28 56 40c0 12-12 20-24 20s-24-8-24-20C8 28 18 14 32 4Zm0 8c-8 10-14 20-14 30h28c0-10-6-20-14-30Z'/%3E%3C/svg%3E">
-<link rel="manifest" href='data:application/manifest+json,{"name":"Section 9 — Cyber-Brain Division","short_name":"SECTION 9","start_url":".","display":"standalone","background_color":"%23060809","theme_color":"%23060809","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 192 192%22%3E%3Crect width=%22192%22 height=%22192%22 fill=%22%23060809%22/%3E%3Cpath fill=%22%23E6792A%22 d=%22M96 24C138 54 168 96 168 132c0 36-36 60-72 60s-72-24-72-60c0-36 30-78 72-108Zm0 24c-24 30-42 60-42 90h84c0-30-18-60-42-90Z%22/%3E%3C/svg%3E","sizes":"192x192","type":"image/svg+xml"}]}'>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23060809'/%3E%3Cline x1='32' y1='6' x2='32' y2='22' stroke='%235BC07A' stroke-width='3'/%3E%3Cline x1='32' y1='42' x2='32' y2='58' stroke='%235BC07A' stroke-width='3'/%3E%3Cline x1='6' y1='32' x2='22' y2='32' stroke='%235BC07A' stroke-width='3'/%3E%3Cline x1='42' y1='32' x2='58' y2='32' stroke='%235BC07A' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%235BC07A'/%3E%3Ctext x='32' y='12' text-anchor='middle' fill='%235BC07A' font-family='monospace' font-size='6' font-weight='bold'%3ES9%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href='data:application/manifest+json,{"name":"Section 9 — Cyber-Brain Division","short_name":"SECTION 9","start_url":".","display":"standalone","background_color":"%23060809","theme_color":"%23060809","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 192 192%22%3E%3Crect width=%22192%22 height=%22192%22 fill=%22%23060809%22/%3E%3Cline x1=%2296%22 y1=%2218%22 x2=%2296%22 y2=%2266%22 stroke=%22%235BC07A%22 stroke-width=%229%22/%3E%3Cline x1=%2296%22 y1=%22126%22 x2=%2296%22 y2=%22174%22 stroke=%22%235BC07A%22 stroke-width=%229%22/%3E%3Cline x1=%2218%22 y1=%2296%22 x2=%2266%22 y2=%2296%22 stroke=%22%235BC07A%22 stroke-width=%229%22/%3E%3Cline x1=%22126%22 y1=%2296%22 x2=%22174%22 y2=%2296%22 stroke=%22%235BC07A%22 stroke-width=%229%22/%3E%3Ccircle cx=%2296%22 cy=%2296%22 r=%2212%22 fill=%22%235BC07A%22/%3E%3C/svg%3E","sizes":"192x192","type":"image/svg+xml"}]}'>
 <title>SECTION 9 // CYBER-BRAIN DIVISION</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +21,10 @@
 
 <a href="#main" class="skip-link">SKIP TO MAIN HUD</a>
 <button class="audio-toggle" id="audioToggle" onclick="toggleAudio()" aria-label="Toggle ambient audio">[ AUDIO: OFF ]</button>
+<div class="audio-hint" id="audioHint" aria-hidden="true">
+  <span class="audio-hint-arrow">↙</span>
+  <span class="audio-hint-text">SOUND IS PLAYED ON THIS SITE<small>click to enable ambient drone</small></span>
+</div>
 
 <div id="boot" class="boot">
   <canvas id="bootRain" aria-hidden="true"></canvas>
@@ -71,6 +75,7 @@
           <a href="pages/foxhound.html">foxhound</a>
           <a href="pages/instrumentality.html">instrumentality</a>
           <a href="pages/puppetmaster.html">puppet master</a>
+          <a href="pages/lain.html">lain</a>
           <a href="pages/about.html">about</a>
         </nav>
       </span>

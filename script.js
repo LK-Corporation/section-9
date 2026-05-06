@@ -1,3 +1,8 @@
+/* ============= ENV FLAGS ============= */
+const PREFERS_REDUCED_MOTION = typeof window !== 'undefined'
+  && window.matchMedia
+  && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 /* ============= DATA ============= */
 
 const SQUAD = [
@@ -334,7 +339,7 @@ function startConfetti(){
   if (confettiStarted) return;
   const canvas = document.getElementById('confettiCanvas');
   if (!canvas) return;
-  if (window.innerWidth < 900){ canvas.style.display = 'none'; return; }
+  if (window.innerWidth < 900 || PREFERS_REDUCED_MOTION){ canvas.style.display = 'none'; return; }
   confettiStarted = true;
 
   const ctx = canvas.getContext('2d');
@@ -439,6 +444,7 @@ async function runBoot(){
 
 /* ============= RAIN (canvas) ============= */
 function makeRain(canvas, opts){
+  if (PREFERS_REDUCED_MOTION){ canvas.style.display = 'none'; return; }
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
   function resize(){
@@ -773,8 +779,60 @@ const EGG_SEQS = {
   'eva01': () => triggerEvaUnit('01'),
   'eva02': () => triggerEvaUnit('02'),
   'unit01': () => triggerEvaUnit('01'),
-  'unit02': () => triggerEvaUnit('02')
+  'unit02': () => triggerEvaUnit('02'),
+
+  // BOOT REPLAY
+  'replay': () => triggerBootReplay(),
+  'reboot': () => triggerBootReplay(),
+  'boot': () => triggerBootReplay(),
+
+  // LAIN
+  'lain': () => triggerLainEnter(),
+  'wired': () => triggerLainEnter(),
+  'iwakura': () => triggerLainEnter(),
+  'protocol7': () => triggerLainEnter(),
+  'eiri': () => triggerLainEnter()
 };
+
+function triggerLainEnter(){
+  const old = document.querySelector('.lain-enter');
+  if (old) old.remove();
+  const wrap = document.createElement('div');
+  wrap.className = 'lain-enter';
+  wrap.setAttribute('aria-hidden', 'true');
+  wrap.innerHTML =
+    '<div class="lain-enter-tag">PROTOCOL 7 // SCHUMANN BAND OPEN</div>' +
+    '<div class="lain-enter-h">close the world<small>open the wOrld</small></div>' +
+    '<div class="lain-enter-sub">routing to the wired...</div>';
+  document.body.appendChild(wrap);
+  pushOpsCustom('wired', 'ok', 'lain // routing // pages/lain.html');
+  beep(660, 0.05, 'square');
+  setTimeout(() => beep(880, 0.05, 'square'), 120);
+  setTimeout(() => beep(1320, 0.08, 'square'), 320);
+  requestAnimationFrame(() => wrap.classList.add('show'));
+  setTimeout(() => { window.location.href = 'pages/lain.html'; }, 1300);
+}
+
+async function triggerBootReplay(){
+  const old = document.querySelector('.boot-replay');
+  if (old) old.remove();
+  const wrap = document.createElement('div');
+  wrap.className = 'boot-replay';
+  wrap.setAttribute('aria-hidden', 'true');
+  wrap.innerHTML =
+    '<canvas class="boot-title-stamp" id="bootReplayCanvas" aria-label="SECTION 9"></canvas>' +
+    '<div class="boot-subtitle">PUBLIC SECURITY // CYBER-BRAIN DIVISION</div>' +
+    '<div class="boot-tagline">TACTICAL ESPIONAGE OPERATION</div>';
+  document.body.appendChild(wrap);
+  pushOpsCustom('boot', 'ok', 'replay // section 9 stamp');
+  requestAnimationFrame(() => wrap.classList.add('show'));
+  const cvs = wrap.querySelector('#bootReplayCanvas');
+  if (cvs) await renderBootStamp(cvs, 'SECTION 9');
+  await sleep(2200);
+  wrap.classList.remove('show');
+  await sleep(620);
+  if (wrap.parentNode) wrap.remove();
+}
 
 function triggerAlertFlash(){
   const w = document.getElementById('alertWidget');
@@ -1266,6 +1324,22 @@ function toggleAudio(){
   btn.textContent = audioOn ? '[ AUDIO: ON ]' : '[ AUDIO: OFF ]';
   if (audioOn){ ensureAudio().resume(); startAmbient(); beep(880, 0.1, 'square'); }
   else stopAmbient();
+  dismissAudioHint();
+}
+
+function showAudioHint(){
+  try { if (sessionStorage.getItem('s9_audio_hinted') === '1') return; } catch(_){}
+  const el = document.getElementById('audioHint');
+  if (!el) return;
+  setTimeout(() => { el.classList.add('visible'); }, 1500);
+  setTimeout(dismissAudioHint, 8500);
+}
+
+function dismissAudioHint(){
+  const el = document.getElementById('audioHint');
+  if (!el) return;
+  el.classList.remove('visible');
+  try { sessionStorage.setItem('s9_audio_hinted', '1'); } catch(_){}
 }
 
 /* ============= 3D DIVE (Three.js lazy load) ============= */
@@ -2457,6 +2531,18 @@ const HELP_LIST = {
     ['magi', 'trigger MAGI vote'],
     ['pattern', 'pattern blue alert']
   ],
+  'LAIN': [
+    ['lain', 'enter the wired'],
+    ['wired', 'alias lain'],
+    ['iwakura', 'alias lain'],
+    ['protocol7', 'alias lain'],
+    ['eiri', 'alias lain']
+  ],
+  'SYSTEM': [
+    ['replay', 'rewatch boot stamp'],
+    ['reboot', 'alias replay'],
+    ['boot', 'alias replay']
+  ],
   'KEYBOARD ONLY': [
     ['konami code', '↑↑↓↓←→←→ B A → SAC'],
     ['ESC', 'close any overlay']
@@ -3056,6 +3142,7 @@ function startMainLoops(){
   renderOrders();
   bindOrdersBoard();
   startConfetti();
+  showAudioHint();
   bindCodecRows();
   bindMotherBase();
 

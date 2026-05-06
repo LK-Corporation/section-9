@@ -25,7 +25,7 @@
     line-height: 1.4;
     overflow: hidden;
     height: 100vh;
-    cursor: crosshair;
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><line x1='14' y1='2' x2='14' y2='10' stroke='%235BC07A' stroke-width='1.4'/><line x1='14' y1='18' x2='14' y2='26' stroke='%235BC07A' stroke-width='1.4'/><line x1='2' y1='14' x2='10' y2='14' stroke='%235BC07A' stroke-width='1.4'/><line x1='18' y1='14' x2='26' y2='14' stroke='%235BC07A' stroke-width='1.4'/><circle cx='14' cy='14' r='1.4' fill='%235BC07A'/></svg>") 14 14, crosshair;
   }
 
   body::before {
@@ -569,65 +569,6 @@
   .ops-entry.warn .msg { color: var(--orange); }
   .ops-entry .msg { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  /* ===== MISSION BRIEFING ===== */
-  .briefing {
-    border: 1px solid var(--orange-dim);
-    background: linear-gradient(180deg, rgba(255,107,26,0.06) 0%, rgba(0,0,0,0.4) 100%);
-    padding: 12px 16px;
-    position: relative;
-  }
-  .briefing::before, .briefing::after {
-    content: '';
-    position: absolute;
-    width: 12px; height: 12px;
-    border-color: var(--orange);
-  }
-  .briefing::before { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
-  .briefing::after { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
-  .briefing-head {
-    display: flex; justify-content: space-between; align-items: baseline;
-    margin-bottom: 8px;
-  }
-  .briefing-tag {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--orange);
-  }
-  .briefing-status {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: var(--green);
-    border: 1px solid var(--green);
-    padding: 1px 6px;
-  }
-  .briefing-name {
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 900;
-    font-size: 18px;
-    letter-spacing: 3px;
-    color: var(--orange);
-    text-shadow: 0 0 8px rgba(255,107,26,0.3);
-    margin-bottom: 8px;
-  }
-  .briefing-grid {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    gap: 4px 12px;
-    font-size: 11px;
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px dashed var(--orange-dim);
-  }
-  .briefing-grid dt {
-    color: var(--gray);
-    font-family: 'Orbitron', sans-serif;
-    font-size: 9px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .briefing-grid dd { color: var(--green); }
 
   /* ===== Right column ===== */
   .right {
@@ -1980,7 +1921,7 @@
   /* ===== AUDIO TOGGLE ===== */
   .audio-toggle {
     position: fixed;
-    top: 14px; left: 14px;
+    bottom: 14px; left: 14px;
     z-index: 9000;
     background: var(--bg2);
     border: 1px solid var(--gray-dim);
@@ -1997,6 +1938,68 @@
     border-color: var(--green);
     color: var(--green);
     text-shadow: 0 0 3px var(--green-glow);
+  }
+
+  /* ===== AUDIO HINT (post-boot, y-n10 inspired) ===== */
+  .audio-hint {
+    position: fixed;
+    bottom: 48px; left: 18px;
+    z-index: 8990;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    padding: 6px 10px 6px 8px;
+    background: rgba(6,8,9,0.85);
+    border: 1px dashed var(--green-dim);
+    color: var(--gray);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    line-height: 1.4;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    max-width: 260px;
+  }
+  .audio-hint.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .audio-hint-arrow {
+    color: var(--green);
+    font-size: 14px;
+    line-height: 1;
+    margin-bottom: -1px;
+    animation: hintPulse 1.4s ease-in-out infinite;
+    text-shadow: 0 0 4px var(--green-glow);
+  }
+  @keyframes hintPulse {
+    0%, 100% { transform: translate(0,0); opacity: 1; }
+    50% { transform: translate(-3px,3px); opacity: 0.6; }
+  }
+  .audio-hint-text {
+    color: var(--green);
+    text-shadow: 0 0 3px var(--green-glow);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .audio-hint-text small {
+    color: var(--gray);
+    font-size: 7px;
+    letter-spacing: 1px;
+    text-shadow: none;
+    text-transform: lowercase;
+  }
+  @media (max-width: 600px) {
+    .audio-hint {
+      bottom: 56px;
+      left: 12px;
+      max-width: 180px;
+      font-size: 7px;
+    }
+    .audio-hint-arrow { display: none; }
   }
 
   /* ===== 3D DIVE OVERLAY ===== */
@@ -2192,6 +2195,84 @@
     display: block;
     margin: 0 auto 12px auto;
     filter: drop-shadow(0 0 12px rgba(91,192,122,0.35));
+  }
+
+  /* ===== LAIN ENTER OVERLAY (cmd: lain / wired / iwakura / protocol7 / eiri) ===== */
+  .lain-enter {
+    position: fixed; inset: 0;
+    z-index: 870;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: rgba(6,8,9,0.94);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    backdrop-filter: blur(3px);
+    color: var(--cyan);
+    text-align: center;
+  }
+  .lain-enter.show { opacity: 1; }
+  .lain-enter-tag {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 5px;
+    color: var(--cyan-dim);
+    margin-bottom: 18px;
+    animation: lainBlink 1s steps(2) infinite;
+  }
+  @keyframes lainBlink {
+    50% { opacity: 0.3; }
+  }
+  .lain-enter-h {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 56px;
+    letter-spacing: 6px;
+    color: var(--cyan);
+    text-shadow: 0 0 12px rgba(79,184,204,0.55);
+    line-height: 1.05;
+  }
+  .lain-enter-h small {
+    display: block;
+    font-size: 22px;
+    letter-spacing: 4px;
+    color: var(--green);
+    text-shadow: 0 0 8px var(--green-glow);
+    margin-top: 8px;
+    font-weight: 700;
+  }
+  .lain-enter-sub {
+    margin-top: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gray);
+  }
+  @media (max-width: 720px) {
+    .lain-enter-h { font-size: 32px; letter-spacing: 3px; }
+    .lain-enter-h small { font-size: 14px; letter-spacing: 2px; }
+  }
+
+  /* ===== BOOT REPLAY OVERLAY (cmd: replay / reboot / boot) ===== */
+  .boot-replay {
+    position: fixed; inset: 0;
+    z-index: 850;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: rgba(6,8,9,0.92);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+    backdrop-filter: blur(2px);
+  }
+  .boot-replay.show { opacity: 1; }
+  .boot-replay .boot-subtitle,
+  .boot-replay .boot-tagline {
+    margin-top: 6px;
   }
   .boot-subtitle {
     font-family: 'Orbitron', sans-serif;
@@ -3024,46 +3105,6 @@
   }
   .ticker.paused .ticker-content { animation-play-state: paused !important; }
 
-  /* ===== Briefing toggle ===== */
-  .briefing-status {
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: var(--green);
-    border: 1px solid var(--green);
-    padding: 2px 8px;
-    background: rgba(91,192,122,0.05);
-  }
-  .briefing-status:hover {
-    background: rgba(91,192,122,0.18);
-    box-shadow: 0 0 6px var(--green-glow);
-  }
-  .briefing-status.paused {
-    color: var(--orange);
-    border-color: var(--orange);
-    background: rgba(230,121,42,0.05);
-  }
-  .briefing-status.paused:hover {
-    background: rgba(230,121,42,0.18);
-    box-shadow: 0 0 6px rgba(230,121,42,0.25);
-  }
-  .briefing-status.standdown {
-    color: var(--red);
-    border-color: var(--red);
-    background: rgba(217,69,69,0.05);
-    animation: standdownPulse 1.6s ease-in-out infinite;
-  }
-  @keyframes standdownPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-  .briefing-status:focus-visible {
-    outline: 2px solid var(--cyan);
-    outline-offset: 2px;
-  }
-
   /* ===== Codec row clickable ===== */
   .codec-row[role="button"] {
     cursor: pointer;
@@ -3283,6 +3324,26 @@
   }
   .stat-cell.clickable:hover .sval::after { color: var(--green); }
 
+  /* ===== CUSTOM CURSOR (target brackets on clickables) ===== */
+  a, button, [role="button"], summary,
+  .lp-clickable, .codec-row[data-freq], .stat-cell.clickable,
+  .ph-btn, .title-btn, .cmd-go, .audio-toggle, .placard-gh,
+  .tachi-card, .order-pill, .order-del, .alert-widget,
+  .placard-nav a {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><path d='M2 9 L2 2 L9 2' stroke='%23E6792A' stroke-width='1.5' fill='none'/><path d='M26 9 L26 2 L19 2' stroke='%23E6792A' stroke-width='1.5' fill='none'/><path d='M2 19 L2 26 L9 26' stroke='%23E6792A' stroke-width='1.5' fill='none'/><path d='M26 19 L26 26 L19 26' stroke='%23E6792A' stroke-width='1.5' fill='none'/><circle cx='14' cy='14' r='1.6' fill='%23E6792A'/></svg>") 14 14, pointer;
+  }
+  input, textarea, [contenteditable="true"], .cmd-input, .order-title {
+    cursor: text;
+  }
+  @media (max-width: 900px), (pointer: coarse) {
+    html, body, a, button, [role="button"], summary,
+    .lp-clickable, .codec-row[data-freq], .stat-cell.clickable,
+    .ph-btn, .title-btn, .cmd-go, .audio-toggle, .placard-gh,
+    .tachi-card, .order-pill, .order-del, .alert-widget,
+    .placard-nav a { cursor: auto; }
+    input, textarea, [contenteditable="true"], .cmd-input, .order-title { cursor: text; }
+  }
+
   /* Mother Base popup list */
   .mb-list {
     position: fixed;
@@ -3378,6 +3439,18 @@
   }
   @media (max-width: 900px) {
     #confettiCanvas { display: none; }
+  }
+
+  /* ===== prefers-reduced-motion (a11y + battery) ===== */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    #confettiCanvas, #rain, #bootRain { display: none !important; }
+    .ticker-content { animation: none !important; transform: none !important; }
   }
 
   /* ===== ORDERS BOARD (replaces briefing) ===== */
@@ -3668,7 +3741,7 @@
 
     /* Hit-target minimums on interactive cards */
     .lp-clickable, .stat-cell.clickable, .codec-row[role="button"],
-    .briefing-status, .ph-btn, .title-btn {
+    .ph-btn, .title-btn {
       min-height: 36px;
     }
 
