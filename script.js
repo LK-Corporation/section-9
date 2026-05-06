@@ -786,13 +786,134 @@ const EGG_SEQS = {
   'reboot': () => triggerBootReplay(),
   'boot': () => triggerBootReplay(),
 
+  // META (not counted as discoveries)
+  'wipe': () => triggerResetProgress(),
+  'reset': () => triggerResetProgress(),
+
   // LAIN
   'lain': () => triggerLainEnter(),
   'wired': () => triggerLainEnter(),
   'iwakura': () => triggerLainEnter(),
   'protocol7': () => triggerLainEnter(),
-  'eiri': () => triggerLainEnter()
+  'eiri': () => triggerLainEnter(),
+  'phantoma': () => triggerPhantoma(),
+  'cyberia': () => triggerCyberia(),
+  'accela': () => triggerCyberia(),
+  'knights': () => triggerKnights(),
+  'navi': () => triggerNavi(),
+  'schumann': () => triggerSchumann()
 };
+
+function triggerPhantoma(){
+  const div = makeOvl('phantoma-overlay');
+  div.innerHTML +=
+    '<svg class="phantoma-grid" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid meet">' +
+      '<defs><linearGradient id="pgFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%234FB8CC" stop-opacity="0.15"/><stop offset="1" stop-color="%234FB8CC" stop-opacity="0.85"/></linearGradient></defs>' +
+      // horizontal vanishing grid
+      Array.from({length: 9}, (_, i) => {
+        const y = 80 + i * (160 / 9);
+        const inset = (i / 9) * 160;
+        return `<line x1="${inset}" y1="${y}" x2="${400 - inset}" y2="${y}" stroke="#4FB8CC" stroke-width="${0.6 + i*0.12}" opacity="${0.25 + i*0.08}"/>`;
+      }).join('') +
+      // verticals converging to center
+      Array.from({length: 11}, (_, i) => {
+        const xTop = 60 + (i * 280 / 10);
+        const xBottom = i * 40;
+        return `<line x1="${xTop}" y1="80" x2="${xBottom}" y2="240" stroke="#4FB8CC" stroke-width="0.7" opacity="0.45"/>`;
+      }).join('') +
+    '</svg>' +
+    '<div class="phantoma-text">PHANTOMa<small>game leaks players · players leak game</small></div>' +
+    '<div class="phantoma-status">CONNECTED // 1,402 GHOSTS ONLINE</div>' +
+    '<div class="ovl-hint">[ESC] to dismiss</div>';
+  document.body.appendChild(div);
+  beep(440, 0.08, 'square');
+  setTimeout(() => beep(660, 0.06, 'square'), 140);
+  setTimeout(() => beep(330, 0.10, 'sine'), 320);
+}
+
+function triggerCyberia(){
+  const div = makeOvl('cyberia-overlay');
+  div.innerHTML +=
+    '<div class="cyberia-flicker">CYBERIA</div>' +
+    '<div class="cyberia-sub">SHIBUYA · BASEMENT 03 · BOUNDARY THIN</div>' +
+    '<div class="cyberia-stim">' +
+      '<span class="stim-tag">// NEURAL STIM ADMINISTERED</span>' +
+      '<span class="stim-name">ACCELA</span>' +
+      '<span class="stim-warn">substrate timing exposed · do not exit until tone resolves</span>' +
+    '</div>' +
+    '<div class="ovl-hint">[ESC] to dismiss</div>';
+  document.body.appendChild(div);
+  // bass loop simulated with quick descending tones
+  beep(80, 0.4, 'sawtooth');
+  setTimeout(() => beep(110, 0.35, 'sawtooth'), 320);
+  setTimeout(() => beep(80, 0.4, 'sawtooth'), 640);
+}
+
+function triggerKnights(){
+  const div = makeOvl('knights-overlay');
+  const cells = Array.from({length: 13}, (_, i) => {
+    const num = String(i + 1).padStart(2, '0');
+    return `<div class="knight-cell"><div class="knight-num">// ${num}</div><div class="knight-bracket">[ ]</div><div class="knight-id">offline</div></div>`;
+  }).join('');
+  div.innerHTML +=
+    '<div class="knights-tag">// KNIGHTS OF EASTERN CALCULUS</div>' +
+    '<div class="knights-h">async cells · never met · all bound</div>' +
+    '<div class="knights-grid">' + cells + '</div>' +
+    '<div class="knights-foot">// directives last received: silenced by lain</div>' +
+    '<div class="ovl-hint">[ESC] to dismiss</div>';
+  document.body.appendChild(div);
+  beep(220, 0.05, 'square');
+  setTimeout(() => beep(330, 0.05, 'square'), 80);
+  setTimeout(() => beep(440, 0.08, 'square'), 160);
+}
+
+function triggerNavi(){
+  const div = makeOvl('navi-overlay');
+  div.innerHTML +=
+    '<pre class="navi-art">' +
+      '         ┌──────────────┐\n' +
+      '   ┌─────┤  COPLAND OS  ├─────┐\n' +
+      '   │     └──────┬───────┘     │\n' +
+      '   │    ╭───────┴────────╮    │\n' +
+      '   ├────┤ CUSTOM CHIPSET ├────┤\n' +
+      '   │    ╰───────┬────────╯    │\n' +
+      '   │   ┌────────┴─────────┐   │\n' +
+      '   ├───┤ LIQUID-COOL LOOP ├───┤\n' +
+      '   │   └────────┬─────────┘   │\n' +
+      '   │ ╱╲╱╲╱╲╱╲╱╲╱┴╲╱╲╱╲╱╲╱╲╱╲ │\n' +
+      '   │ ▓▓▓▓▓▓▓▓▓ NAVI ▓▓▓▓▓▓▓▓▓ │\n' +
+      '   └─────────────────────────┘' +
+    '</pre>' +
+    '<div class="navi-label">NAVI<small>terminal · gradually indistinguishable from operator</small></div>' +
+    '<div class="ovl-hint">[ESC] to dismiss</div>';
+  document.body.appendChild(div);
+  beep(660, 0.04, 'square');
+  setTimeout(() => beep(880, 0.04, 'square'), 80);
+  setTimeout(() => beep(1320, 0.06, 'square'), 200);
+}
+
+function triggerSchumann(){
+  const div = makeOvl('schumann-overlay');
+  // generate a smooth-ish low-frequency waveform path
+  const w = 800, h = 160;
+  let path = 'M 0 ' + (h/2);
+  for (let x = 0; x <= w; x += 8){
+    const y = h/2 + Math.sin(x * 0.04) * 30 + Math.sin(x * 0.018) * 18;
+    path += ` L ${x} ${y.toFixed(1)}`;
+  }
+  div.innerHTML +=
+    '<div class="schumann-tag">// PLANETARY EM RESONANCE</div>' +
+    '<div class="schumann-freq">7.83 <small>Hz</small></div>' +
+    '<svg class="schumann-wave" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">' +
+      `<path d="${path}" stroke="#4FB8CC" stroke-width="2" fill="none" opacity="0.85"/>` +
+      `<path d="${path}" stroke="#4FB8CC" stroke-width="6" fill="none" opacity="0.18"/>` +
+    '</svg>' +
+    '<div class="schumann-sub">earth\'s carrier wave · weaponized by protocol 7 · backdoor for the willing</div>' +
+    '<div class="ovl-hint">[ESC] to dismiss</div>';
+  document.body.appendChild(div);
+  // slow low tone evoking 7.83Hz (audible octave up)
+  beep(125, 1.2, 'sine');
+}
 
 function triggerLainEnter(){
   const old = document.querySelector('.lain-enter');
@@ -2655,12 +2776,20 @@ const HELP_LIST = {
     ['wired', 'alias lain'],
     ['iwakura', 'alias lain'],
     ['protocol7', 'alias lain'],
-    ['eiri', 'alias lain']
+    ['eiri', 'alias lain'],
+    ['phantoma', 'game leaks players'],
+    ['cyberia', 'shibuya · accela'],
+    ['accela', 'alias cyberia'],
+    ['knights', 'eastern calculus · 13 cells'],
+    ['navi', 'lain\'s terminal · expanded'],
+    ['schumann', '7.83 Hz · planetary resonance']
   ],
   'SYSTEM': [
     ['replay', 'rewatch boot stamp'],
     ['reboot', 'alias replay'],
-    ['boot', 'alias replay']
+    ['boot', 'alias replay'],
+    ['wipe', 'reset discovery counter (with confirm)'],
+    ['reset', 'alias wipe']
   ],
   'KEYBOARD ONLY': [
     ['konami code', '↑↑↓↓←→←→ B A → SAC'],
@@ -2741,13 +2870,63 @@ function submitCommand(){
   }
   if (EGG_SEQS[cmd]){
     EGG_SEQS[cmd]();
-    markEggDiscovered(cmd);
+    if (!META_EGGS.has(cmd)) markEggDiscovered(cmd);
     input.value = '';
     beep(880, 0.05, 'square');
   } else {
     triggerYouDied(cmd);
     input.value = '';
   }
+}
+
+const META_EGGS = new Set(['wipe', 'reset']);
+
+function triggerResetProgress(){
+  const old = document.querySelector('.reset-confirm');
+  if (old) old.remove();
+  const wrap = document.createElement('div');
+  wrap.className = 'reset-confirm ovl';
+  wrap.setAttribute('role', 'dialog');
+  wrap.setAttribute('aria-modal', 'true');
+  const total = totalEggs();
+  const found = discoveredEggs.size;
+  wrap.innerHTML =
+    '<div class="reset-card">' +
+      '<div class="reset-tag">// SYSTEM // CONFIRM PURGE</div>' +
+      '<div class="reset-h">WIPE PROGRESS</div>' +
+      '<p class="reset-body">This will erase your easter-egg discovery counter (' + found + '/' + total + ') and the audio-hint dismissal flag. Orders board and visit count are preserved.</p>' +
+      '<p class="reset-warn">action is irreversible · think twice</p>' +
+      '<div class="reset-actions">' +
+        '<button class="reset-btn cancel" data-act="cancel" type="button">[N] CANCEL</button>' +
+        '<button class="reset-btn confirm" data-act="confirm" type="button">[Y] CONFIRM PURGE</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(wrap);
+  beep(220, 0.06, 'sawtooth');
+
+  function close(){ if (wrap.parentNode) wrap.remove(); document.removeEventListener('keydown', onKey); }
+  function doWipe(){
+    try {
+      localStorage.removeItem(DISCOVERED_KEY);
+      sessionStorage.removeItem('s9_audio_hinted');
+    } catch(_){}
+    discoveredEggs = new Set();
+    updateCounterUI(false);
+    const counter = document.getElementById('cmdCounter');
+    if (counter) counter.classList.remove('mastered');
+    pushOpsCustom('system', 'warn', 'progress wiped // counter reset');
+    beep(110, 0.18, 'sawtooth');
+    setTimeout(() => beep(80, 0.18, 'sawtooth'), 120);
+    close();
+  }
+  function onKey(e){
+    if (e.key === 'Escape' || e.key === 'n' || e.key === 'N'){ e.preventDefault(); close(); beep(440, 0.05, 'square'); }
+    if (e.key === 'y' || e.key === 'Y' || e.key === 'Enter'){ e.preventDefault(); doWipe(); }
+  }
+  document.addEventListener('keydown', onKey);
+  wrap.querySelector('[data-act="cancel"]').addEventListener('click', () => { close(); beep(440, 0.05, 'square'); });
+  wrap.querySelector('[data-act="confirm"]').addEventListener('click', doWipe);
+  wrap.addEventListener('click', (e) => { if (e.target === wrap) close(); });
 }
 
 /* ============= DISCOVERY COUNTER ============= */
