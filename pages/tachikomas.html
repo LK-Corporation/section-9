@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#060809">
+<meta name="color-scheme" content="dark">
+<title>TACHIKOMA UNITS // SECTION 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="page.css">
+<script src="page.js" defer></script>
+</head>
+<body class="page">
+
+<header class="page-header">
+  <a href="../index.html" class="back-link">[ ← BACK TO HUD ]</a>
+  <span class="page-title">TACHIKOMA UNITS // DOSSIER</span>
+  <span class="page-id">// PAGE 02</span>
+  <nav class="page-nav">
+    <a href="tachikomas.html" class="active">tachikomas</a>
+    <a href="codex.html">codex</a>
+    <a href="foxhound.html">foxhound</a>
+    <a href="instrumentality.html">instrumentality</a>
+    <a href="puppetmaster.html">puppet master</a>
+    <a href="about.html">about</a>
+  </nav>
+</header>
+
+<main class="page-content">
+
+  <section class="page-hero">
+    <div class="page-hero-tag">SECTION 9 // CYBER-BRAIN DIVISION // THINK-TANK ROSTER</div>
+    <h1 class="page-hero-h1">TACHIKOMAS<small>MCP think-tanks · 6 deployed · 2 hosts</small></h1>
+    <p class="page-hero-lead">
+      Six AI-augmented spider tanks operating across two hosts. Each one wraps a single
+      capability behind the <code>EXEC_MODE=local</code> protocol — Hermes Gateway dispatches
+      requests, the tachikoma resolves locally without round-tripping over SSH.
+      Most run on the deep-dive node (Kali VM); the most popular one runs on the operator's
+      Windows host because the Vault lives there.
+    </p>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">01</span> ACTIVE UNITS</h2>
+
+    <div class="dossier-list">
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-006 // RECON</div>
+        <div class="dossier-item-name">CVE-LOOKUP</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>kali // deep-dive</dd>
+          <dt>stack</dt><dd>node.js stdio MCP</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>skills</dt><dd>NVD query · CVSS scoring · patch hints</dd>
+          <dt>uptime</dt><dd>since tier 4-P (2026-04-30)</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>"¡Hola Brus! Hoy busco CVEs y los explico bonito."</em><br>
+          Wraps NVD/MITRE feeds. Given a CVE-ID, returns severity, vector, vendor advisory,
+          and a one-line plain-language explanation. Standby most of the time — fires only
+          when Batou asks about a vulnerability.
+        </p>
+      </article>
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-007 // RECON</div>
+        <div class="dossier-item-name">KALI-RECON</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>kali // deep-dive</dd>
+          <dt>stack</dt><dd>shell wrapper (nmap, whois, dig)</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>skills</dt><dd>nmap · whois · DNS recon</dd>
+          <dt>caveat</dt><dd>tachikoma napping (0 ops)</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>"¡Brus-san! Tengo nmap y ganas de scanear."</em><br>
+          Provides a structured wrapper around standard recon CLI tools so the operator
+          doesn't shell out manually. Conservative in defaults: SYN scan, top-1000 ports,
+          rate-limited.
+        </p>
+      </article>
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-008 // RECON</div>
+        <div class="dossier-item-name">WEB-RECON</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>kali // deep-dive</dd>
+          <dt>stack</dt><dd>node.js + headless fetch</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>skills</dt><dd>headers · TLS audit · tech fingerprint</dd>
+          <dt>uptime</dt><dd>since 2026-04-30</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>"Encontré 12 endpoints abiertos esta semana, ¿no? ¡Espera, son cero!"</em><br>
+          Maps the public attack surface of a host: open headers, certificate chain,
+          framework detection. Returns JSON. Doesn't crawl deep — that's not its job.
+        </p>
+      </article>
+
+      <article class="dossier-item cyan">
+        <div class="dossier-item-tag">T-009 // BRIDGE</div>
+        <div class="dossier-item-name">VAULT-BRIDGE</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>win // operator</dd>
+          <dt>stack</dt><dd>HTTP service :3142</dd>
+          <dt>exec</dt><dd>local HTTP (cross-host via tailnet)</dd>
+          <dt>skills</dt><dd>read_page · write_page · list_pages</dd>
+          <dt>activity</dt><dd>~daily ops · most popular unit</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>"¡Yo sí trabajo! Soy el más popular de la unidad."</em><br>
+          The bridge between the cyber-brain (Batou on Kali) and the soft-knowledge vault
+          (Markdown wiki on Windows). Single biggest-volume tachikoma in the squad.
+          Watchdog patrols it every 60s. Without it, Batou is blind to the operator's
+          long-term memory.
+        </p>
+      </article>
+
+      <article class="dossier-item orange">
+        <div class="dossier-item-tag">T-010 // COMM</div>
+        <div class="dossier-item-name">NOTIFY-VOLTRON</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>kali // deep-dive</dd>
+          <dt>stack</dt><dd>HTTP POST → :3141 (tailnet)</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>skills</dt><dd>telegram push · voltron relay</dd>
+          <dt>activity</dt><dd>on-demand only</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>"Yo solo paso mensajes. Soy un cartero feliz."</em><br>
+          Outbound communications gateway. Posts to a Voltron HTTP endpoint that, in turn,
+          relays to Telegram. Used for canary alerts (backup success, scout completion)
+          and ad-hoc notifications. Authentication via shared <code>NOTIFY_SECRET</code>.
+        </p>
+      </article>
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-011 // ANALYSIS</div>
+        <div class="dossier-item-name">CLAUDE-DEEP</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>kali // deep-dive</dd>
+          <dt>stack</dt><dd>claude-code CLI v2.1.126</dd>
+          <dt>model</dt><dd>claude-sonnet-4-6</dd>
+          <dt>skills</dt><dd>deep reasoning · 50K char context</dd>
+          <dt>timeout</dt><dd>300s (was 120s, fixed 2026-05-05)</dd>
+          <dt>activity</dt><dd>~weekly ops</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>"Cuando Batou no da con algo, me llama. Me siento útil."</em><br>
+          Heavy-reasoning fallback. When the Field Operative (Batou, Gemini Flash) hits the
+          ceiling on a complex analysis, this unit takes over with Sonnet 4.6 and a longer
+          context window. Slow but thorough. Used for security audits, architectural review,
+          long-form synthesis.
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">02</span> COORDINATION DOCTRINE</h2>
+    <p class="page-text">
+      Tachikomas don't share state. Each one is a pure function: input → output, no memory.
+      Memory lives in the <strong>cyber-brain (Batou)</strong> who orchestrates them, plus
+      <strong>Honcho dialectic</strong> (long-term patterns) and the <strong>Vault</strong>
+      (knowledge base). This is intentional — keeps each unit replaceable, testable,
+      <em>independent but together.</em>
+    </p>
+
+    <p class="page-text">
+      Hermes Gateway holds the dispatch table. When Batou invokes
+      <code>cve-lookup.query("CVE-2026-12345")</code>, Hermes resolves it to a local stdio
+      handle on Kali, no SSH round-trip. The <code>EXEC_MODE=local</code> patch in
+      <code>shared/src/ssh.mjs</code> bypasses the SSH layer when the tachikoma is co-located
+      with the gateway. Patch applied during Tier 4-P refactor.
+    </p>
+
+    <blockquote class="page-quote">
+      "We're standalone, but we're together."
+      <cite>— Tachikoma // Stand Alone Complex (paraphrased)</cite>
+    </blockquote>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">03</span> RECRUITMENT // OPEN SLOTS</h2>
+    <p class="page-text">
+      One slot is currently vacant (<code>V-006</code>). Conditions for promoting a candidate
+      tachikoma to active duty:
+    </p>
+    <ul class="page-text" style="list-style:none;padding-left:14px;">
+      <li>· Single capability, well-defined.</li>
+      <li>· Stateless — no shared mutable state with other units.</li>
+      <li>· Local execution preferred (avoid network round-trips).</li>
+      <li>· Logs to <code>~/logs/&lt;unit&gt;.log</code> with structured JSON.</li>
+      <li>· Dies gracefully on Hermes shutdown.</li>
+    </ul>
+    <p class="page-text">
+      Candidates currently under consideration: a finance/spreadsheet reader, a calendar
+      bridge, an arXiv ingest helper. None promoted yet — operator doctrine is
+      <em>simplify before adding</em>.
+    </p>
+  </section>
+
+</main>
+
+<div class="page-watermark cyan" aria-hidden="true">
+  <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2">
+    <ellipse cx="100" cy="60" rx="60" ry="32"/>
+    <circle cx="80" cy="55" r="9"/>
+    <circle cx="120" cy="55" r="9"/>
+    <line x1="50" y1="80" x2="20" y2="140"/>
+    <line x1="80" y1="90" x2="60" y2="150"/>
+    <line x1="120" y1="90" x2="140" y2="150"/>
+    <line x1="150" y1="80" x2="180" y2="140"/>
+    <line x1="20" y1="142" x2="180" y2="142" stroke-dasharray="4 4"/>
+  </svg>
+</div>
+
+<footer class="page-footer">
+  <span class="nerv-mini">
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <path class="leaf" d="M32 4 C46 14 56 28 56 40 C56 52 44 60 32 60 C20 60 8 52 8 40 C8 28 18 14 32 4 Z M32 12 C24 22 18 32 18 42 L46 42 C46 32 40 22 32 12 Z"/>
+    </svg>
+    NERV
+  </span>
+  SECTION 9 // PUBLIC SECURITY // CYBER-BRAIN DIVISION
+</footer>
+
+</body>
+</html>

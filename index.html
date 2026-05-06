@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Section 9 // Cyber-Brain Division — operator HUD inspired by Ghost in the Shell, Matrix, Metal Gear Solid and Evangelion.">
+<meta name="theme-color" content="#060809">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SECTION 9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23E6792A' d='M32 4C46 14 56 28 56 40c0 12-12 20-24 20s-24-8-24-20C8 28 18 14 32 4Zm0 8c-8 10-14 20-14 30h28c0-10-6-20-14-30Z'/%3E%3C/svg%3E">
+<link rel="manifest" href='data:application/manifest+json,{"name":"Section 9 — Cyber-Brain Division","short_name":"SECTION 9","start_url":".","display":"standalone","background_color":"%23060809","theme_color":"%23060809","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 192 192%22%3E%3Crect width=%22192%22 height=%22192%22 fill=%22%23060809%22/%3E%3Cpath fill=%22%23E6792A%22 d=%22M96 24C138 54 168 96 168 132c0 36-36 60-72 60s-72-24-72-60c0-36 30-78 72-108Zm0 24c-24 30-42 60-42 90h84c0-30-18-60-42-90Z%22/%3E%3C/svg%3E","sizes":"192x192","type":"image/svg+xml"}]}'>
+<title>SECTION 9 // CYBER-BRAIN DIVISION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a href="#main" class="skip-link">SKIP TO MAIN HUD</a>
+<button class="audio-toggle" id="audioToggle" onclick="toggleAudio()" aria-label="Toggle ambient audio">[ AUDIO: OFF ]</button>
+
+<div id="boot" class="boot">
+  <canvas id="bootRain" aria-hidden="true"></canvas>
+  <div class="boot-corners">
+    <div class="boot-corner-tl"></div>
+    <div class="boot-corner-tr"></div>
+    <div class="boot-corner-bl"></div>
+    <div class="boot-corner-br"></div>
+  </div>
+
+  <div class="boot-phase" id="bp1">
+    <div class="boot-tw" id="bp1Text"></div>
+  </div>
+
+  <div class="boot-phase hidden" id="bp2">
+    <div class="boot-glitch-flash"></div>
+    <div class="boot-nerv-glitch">N E R V</div>
+    <div class="boot-nerv-sub">SPECIAL AGENCY UNDER UN COMMAND</div>
+  </div>
+
+  <div class="boot-phase hidden" id="bp3">
+    <div class="boot-auth-title">AUTHENTICATING GHOST</div>
+    <div class="boot-auth-id">PILOT ID: M-001 // CLASSIFIED</div>
+    <div class="boot-progress-list" id="bootProgressList"></div>
+  </div>
+
+  <div class="boot-phase hidden" id="bp4">
+    <div class="boot-title-stamp">SECTION 9</div>
+    <div class="boot-subtitle">PUBLIC SECURITY // CYBER-BRAIN DIVISION</div>
+    <div class="boot-tagline">TACTICAL ESPIONAGE OPERATION</div>
+  </div>
+</div>
+
+<div id="hud" class="hud hidden">
+  <header class="placard">
+    <div class="placard-l">
+      <span class="dot"></span>
+      <span>
+        <span class="placard-title">SECTION 9</span>
+        <span class="placard-sub">// PUBLIC SECURITY // CYBER-BRAIN DIVISION
+          <small>TACTICAL ESPIONAGE OPERATION</small>
+        </span>
+        <nav class="placard-nav" aria-label="Sub-pages">
+          <a href="pages/tachikomas.html">tachikomas</a>
+          <a href="pages/codex.html">codex</a>
+          <a href="pages/foxhound.html">foxhound</a>
+          <a href="pages/instrumentality.html">instrumentality</a>
+          <a href="pages/puppetmaster.html">puppet master</a>
+          <a href="pages/about.html">about</a>
+        </nav>
+      </span>
+    </div>
+    <div class="placard-c">
+      <div class="alert-widget" id="alertWidget">
+        <span class="alert-label">OP STATUS</span>
+        <span class="alert-value" id="alertValue">CLEAR</span>
+        <div class="alert-bars"><span></span><span></span><span></span><span></span></div>
+      </div>
+    </div>
+    <div class="placard-r">
+      <span id="liveTime">--:--:--</span>
+      <span class="badge live">LIVE</span>
+      <a href="https://github.com/victorbrusellaso-ctrl/section-9" class="placard-gh" target="_blank" rel="noopener" aria-label="View source on GitHub">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>SOURCE</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="grid" id="main">
+    <aside class="rain-col" aria-label="Operator telemetry">
+      <canvas id="rain" aria-hidden="true"></canvas>
+      <div class="left-panels">
+        <div class="lp lp-clickable" data-action="operator" role="button" tabindex="0" aria-label="Cycle operator greeting">
+          <div class="lp-h">OPERATOR</div>
+          <div class="lp-greeting" id="lpGreeting">SYNCING...<small>--</small></div>
+        </div>
+
+        <div class="lp lp-clickable" data-action="vitals" role="button" tabindex="0" aria-label="Pulse burst">
+          <div class="lp-h">VITALS</div>
+          <div class="lp-v"><span class="heart">♥</span><span id="bpm">--</span> <span style="font-size:9px;color:var(--gray);">BPM</span></div>
+          <canvas class="sparkline" id="sparkline" aria-hidden="true"></canvas>
+          <div class="lp-row"><span>O₂</span><span class="v" id="o2">--</span></div>
+          <div class="lp-row"><span>LCL</span><span class="v" id="lcl">--</span></div>
+        </div>
+
+        <div class="lp orange lp-clickable" data-action="sync" role="button" tabindex="0" aria-label="Force sync">
+          <div class="lp-h">SYNC RATIO</div>
+          <div class="sync-wrap">
+            <div class="sync-bar-v"><div class="fill" id="syncFill" style="height:0%"></div><div class="ticks"></div></div>
+            <div class="sync-info">
+              <div>
+                <div class="lp-v" style="font-size:18px;" id="syncPct">--%</div>
+                <div style="font-size:7px;color:var(--gray-dim);letter-spacing:1px;">EVA-LIKE</div>
+              </div>
+              <div style="font-size:7px;color:var(--orange-dim);letter-spacing:1px;">ABOVE 40% NOMINAL</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lp cyan lp-clickable" data-action="fingerprint" role="button" tabindex="0" aria-label="Regenerate ghost fingerprint">
+          <div class="lp-h">FINGERPRINT</div>
+          <div class="lp-row"><span>tz</span><span class="v" id="fpTz">--</span></div>
+          <div class="lp-row"><span>os</span><span class="v" id="fpOs">--</span></div>
+          <div class="lp-row"><span>lang</span><span class="v" id="fpLang">--</span></div>
+          <div class="lp-row"><span>scr</span><span class="v" id="fpScr">--</span></div>
+          <div class="lp-row"><span>ghost</span><span class="v" id="fpGhost">--</span></div>
+        </div>
+
+        <div class="lp lp-clickable" data-action="profile" role="button" tabindex="0" aria-label="Show profile detail">
+          <div class="lp-h">PROFILE</div>
+          <div class="lp-row"><span>visit #</span><span class="v" id="vCount">1</span></div>
+          <div class="lp-row"><span>last</span><span class="v" id="vLast">first time</span></div>
+          <div class="lp-row"><span>signal</span><span class="v"><span class="signal-strength"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></span></span></div>
+        </div>
+
+        <div class="mini-monolith lp-clickable" id="miniMono" data-action="monolith" role="button" tabindex="0" aria-label="Cycle monolith number">
+          <div class="mn">07</div>
+          <div class="mlbl">SOUND ONLY</div>
+        </div>
+
+        <div class="lp cyan lp-clickable" data-action="ticker" role="button" tabindex="0" aria-label="Pause/play transmissions">
+          <div class="lp-h">TRANSMISSIONS</div>
+          <div class="ticker"><div class="ticker-content" id="tickerContent">
+            <div class="ticker-row"><b>kusanagi</b>net is vast and infinite</div>
+            <div class="ticker-row"><b>batou</b>she looks tired</div>
+            <div class="ticker-row"><b>tachi</b>¡brus-san! patrol cycle done</div>
+            <div class="ticker-row"><b>watchdog</b>all clear // patrolling</div>
+            <div class="ticker-row"><b>magi</b>code: go // verified</div>
+            <div class="ticker-row"><b>seele</b>sound only</div>
+            <div class="ticker-row"><b>hermes</b>gateway nominal</div>
+          </div></div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="center">
+      <div class="section-title">
+        <span class="num">01</span>
+        <span class="lbl">SQUAD ROSTER</span>
+        <span class="meta">5 operatives</span>
+        <button class="title-btn" onclick="actionScanAll()">[SCAN ALL]</button>
+        <span class="rule"></span>
+      </div>
+      <div class="cards" id="squadCards"></div>
+
+      <div class="section-title">
+        <span class="num">02</span>
+        <span class="lbl">TACHIKOMA UNITS // MCP THINK-TANKS</span>
+        <span class="meta">6 deployed</span>
+        <button class="title-btn cyan" onclick="actionWakeTachis()">[WAKE]</button>
+        <button class="title-btn cyan" onclick="actionTachiSync()">[SYNC]</button>
+        <span class="rule"></span>
+      </div>
+      <div class="tachi" id="tachiCards"></div>
+
+      <div class="section-title">
+        <span class="num">03</span>
+        <span class="lbl">OPERATIONS LOG // LIVE FEED</span>
+        <span class="meta" id="opsCounter">--</span>
+        <button class="title-btn orange" onclick="actionPurgeOps()">[PURGE]</button>
+        <button class="title-btn orange" onclick="actionFloodOps()">[FLOOD]</button>
+        <span class="rule"></span>
+      </div>
+      <div class="ops-log">
+        <div class="ops-feed" id="opsFeed"></div>
+      </div>
+
+      <div class="section-title">
+        <span class="num">04</span>
+        <span class="lbl">CURRENT MISSION BRIEFING</span>
+        <span class="rule"></span>
+      </div>
+      <div class="briefing">
+        <div class="briefing-head">
+          <span class="briefing-tag">OP // GHOST IN THE SHELL</span>
+          <button class="briefing-status" id="briefingStatus" type="button" aria-label="Toggle mission status">ACTIVE</button>
+        </div>
+        <div class="briefing-name">SUSTAIN ECOSYSTEM</div>
+        <div style="font-size:11px; color:var(--gray); line-height:1.6;">
+          Maintain operational integrity across cyber-brain cluster.
+          Vault index synchronized. Defensive barriers nominal. No idea-objective
+          inbound — squad standing by for tactical opportunity.
+        </div>
+        <dl class="briefing-grid">
+          <dt>theater</dt><dd>cross-host // win + kali</dd>
+          <dt>duration</dt><dd>open-ended</dd>
+          <dt>command</dt><dd>brus // M-001</dd>
+          <dt>doctrine</dt><dd>simplify before adding</dd>
+          <dt>adversary</dt><dd>complexity drift</dd>
+          <dt>extraction</dt><dd>recovery.md // age-shell</dd>
+        </dl>
+      </div>
+    </section>
+
+    <aside class="right">
+      <div class="panel cmd-panel">
+        <div class="panel-h">
+          <span>COMMAND // INPUT</span>
+          <button class="ph-btn" onclick="showHelp()" aria-label="Show all commands">[ ? ]</button>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-prompt">&gt;</span>
+          <input type="text" class="cmd-input" id="cmdInput" placeholder="type here... ramiel, dive, tabris..." autocomplete="off" spellcheck="false" aria-label="Command input — type an easter egg name and press Enter">
+        </div>
+        <div class="cmd-hint" id="cmdHint">HINT: try <b>ramiel</b> // eva angel</div>
+      </div>
+
+      <div class="panel topology">
+        <div class="panel-h">
+          <span>NETWORK TOPOLOGY</span>
+          <button class="ph-btn" onclick="actionPing()">[PING]</button>
+        </div>
+        <svg id="topo" viewBox="0 0 200 220" preserveAspectRatio="xMidYMid meet">
+          <line class="link flow" x1="100" y1="40" x2="60" y2="100" />
+          <line class="link flow" x1="100" y1="40" x2="100" y2="100" />
+          <line class="link flow" x1="100" y1="40" x2="140" y2="100" />
+          <line class="link" x1="60" y1="100" x2="100" y2="100" />
+          <line class="link" x1="100" y1="100" x2="140" y2="100" />
+          <line class="link flow" x1="100" y1="40" x2="100" y2="170" />
+          <line class="link" x1="100" y1="170" x2="60" y2="195" />
+          <line class="link" x1="100" y1="170" x2="140" y2="195" />
+
+          <circle class="pulse-ring" cx="100" cy="40" r="4" />
+
+          <circle class="node" id="node-brus" data-node="brus" cx="100" cy="40" r="6" />
+          <text class="node-label" x="100" y="28">BRUS // M-001</text>
+
+          <circle class="node" data-node="vault" cx="60" cy="100" r="5" />
+          <text class="node-label" x="60" y="115">VAULT</text>
+
+          <circle class="node" data-node="tech" cx="100" cy="100" r="5" />
+          <text class="node-label" x="100" y="115">TECH</text>
+
+          <circle class="node" data-node="personal" cx="140" cy="100" r="5" />
+          <text class="node-label" x="140" y="115">PERSONAL</text>
+
+          <circle class="node kali" data-node="kali" cx="100" cy="170" r="6" />
+          <text class="node-label cyan" x="100" y="158">KALI // DEEP DIVE</text>
+
+          <circle class="node" data-node="hermes-svc" cx="60" cy="195" r="4" />
+          <text class="node-label" x="60" y="210">HERMES</text>
+
+          <circle class="node" data-node="batou-svc" cx="140" cy="195" r="4" />
+          <text class="node-label" x="140" y="210">BATOU</text>
+        </svg>
+      </div>
+
+      <div class="panel ghost magi">
+        <div class="panel-h">
+          <span>MAGI // GHOST-LINE</span>
+          <button class="ph-btn" onclick="actionQuery()">[QUERY]</button>
+        </div>
+        <div class="magi-trio">
+          <div class="magi-node" data-id="balthasar">BALTHASAR-2<small>scientist</small></div>
+          <div class="magi-node" data-id="melchior">MELCHIOR-1<small>mother</small></div>
+          <div class="magi-node" data-id="casper">CASPER-3<small>woman</small></div>
+        </div>
+        <div class="magi-result" id="magiResult">AWAITING QUERY</div>
+        <div class="ghost-body">
+          <div class="row"><span class="k">memory fragments</span><span class="v">14</span></div>
+          <div class="row"><span class="k">pattern recognition</span><span class="v active">ACTIVE</span></div>
+          <div class="row"><span class="k">workspace</span><span class="v">batou</span></div>
+          <div class="row"><span class="k">last dialectic</span><span class="v" id="lastDialectic">--</span></div>
+          <div class="row"><span class="k">ghost-hack attempts</span><span class="v">0</span></div>
+        </div>
+      </div>
+
+      <div class="panel barriers at-field">
+        <div class="panel-h">
+          <span>A.T. FIELD // ABSOLUTE TERROR</span>
+          <button class="ph-btn" onclick="actionDeploy()">[DEPLOY]</button>
+        </div>
+        <div class="at-hex-strip" id="atHexStrip">
+          <svg viewBox="0 0 22 24"><polygon points="11,1 21,7 21,17 11,23 1,17 1,7"/></svg>
+          <svg viewBox="0 0 22 24"><polygon points="11,1 21,7 21,17 11,23 1,17 1,7"/></svg>
+          <svg viewBox="0 0 22 24"><polygon points="11,1 21,7 21,17 11,23 1,17 1,7"/></svg>
+          <svg viewBox="0 0 22 24"><polygon points="11,1 21,7 21,17 11,23 1,17 1,7"/></svg>
+        </div>
+        <div class="barrier-body">
+          <div class="brow"><span class="bnum">L1</span><span class="bname">age-shell</span><span class="bstat">INTACT</span></div>
+          <div class="brow"><span class="bnum">L2</span><span class="bname">sops envelope</span><span class="bstat">SEALED</span></div>
+          <div class="brow"><span class="bnum">L3</span><span class="bname">kdbx vault</span><span class="bstat">LOCKED</span></div>
+          <div class="brow"><span class="bnum">L4</span><span class="bname">tailnet mesh</span><span class="bstat">PRIVATE</span></div>
+        </div>
+      </div>
+
+      <div class="panel codec">
+        <div class="panel-h">
+          <span>CODEC // SAVED FREQUENCIES</span>
+          <button class="ph-btn" onclick="actionCodec()">[INCOMING?]</button>
+        </div>
+        <div class="codec-display">
+          <div class="codec-portrait">┌──────┐
+│ ╲╱╲╱ │
+│ ◉  ◉ │
+│  ──  │
+│ ╲══╱ │
+└──────┘
+M-001</div>
+          <div class="codec-freqs">
+            <div class="codec-row" data-freq="140.85" role="button" tabindex="0" aria-label="Hail operator"><span class="freq">140.85</span><span class="who">operator</span><span class="st">OPEN</span></div>
+            <div class="codec-row" data-freq="141.80" role="button" tabindex="0" aria-label="Hail batou"><span class="freq">141.80</span><span class="who">batou</span><span class="st">OPEN</span></div>
+            <div class="codec-row" data-freq="142.52" role="button" tabindex="0" aria-label="Hail hermes"><span class="freq">142.52</span><span class="who">hermes</span><span class="st">OPEN</span></div>
+            <div class="codec-row silent" data-freq="144.75" role="button" tabindex="0" aria-label="Hail voltron"><span class="freq">144.75</span><span class="who">voltron</span><span class="st">SILENT</span></div>
+            <div class="codec-row" data-freq="145.90" role="button" tabindex="0" aria-label="Hail tachikomas"><span class="freq">145.90</span><span class="who">tachikomas</span><span class="st">NET</span></div>
+            <div class="codec-row alert" data-freq="148.41" role="button" tabindex="0" aria-label="Hail watchdog"><span class="freq">148.41</span><span class="who">watchdog</span><span class="st">PATROL</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel mother">
+        <div class="panel-h">
+          <span>MOTHER BASE // AGGREGATE</span>
+          <button class="ph-btn" onclick="actionRefresh()">[REFRESH]</button>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-cell"><div class="sval" id="mbDays">--</div><div class="slbl">DAYS DEPLOYED</div></div>
+          <div class="stat-cell"><div class="sval" id="mbOps">--</div><div class="slbl">OPS PROCESSED</div></div>
+          <div class="stat-cell"><div class="sval">14</div><div class="slbl">GHOST FRAGMENTS</div></div>
+          <div class="stat-cell clickable" data-mb="wikis" role="button" tabindex="0" aria-label="Show linked wikis"><div class="sval">3</div><div class="slbl">WIKIS LINKED</div></div>
+          <div class="stat-cell clickable" data-mb="tachikomas" role="button" tabindex="0" aria-label="Show tachikomas"><div class="sval">6</div><div class="slbl">TACHIKOMAS</div></div>
+          <div class="stat-cell"><div class="sval">0</div><div class="slbl">BREACHES</div></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="quotes">
+    <div class="footer-nerv">
+      <svg class="nerv-svg-mini" viewBox="0 0 64 64" aria-hidden="true">
+        <path class="leaf" d="M32 4 C46 14 56 28 56 40 C56 52 44 60 32 60 C20 60 8 52 8 40 C8 28 18 14 32 4 Z M32 12 C24 22 18 32 18 42 L46 42 C46 32 40 22 32 12 Z"/>
+      </svg>
+      <span class="footer-nerv-txt">NERV</span>
+    </div>
+    <span class="quote-text" id="quoteText">The net is vast and infinite.</span>
+    <span class="quote-attr" id="quoteAttr">— MAJ. KUSANAGI</span>
+    <span class="footer-motto">god's in his heaven · all's right with the world</span>
+  </footer>
+</div>
+
+<div id="dossier" class="dossier hidden">
+  <div class="dossier-card">
+    <button class="dossier-close" onclick="closeDossier()">[ESC] CLOSE</button>
+    <div id="dossierBody"></div>
+  </div>
+</div>
+
+<div id="typeBuf" class="typebuf"></div>
+
+<script src="script.js" defer></script>
+</body>
+</html>

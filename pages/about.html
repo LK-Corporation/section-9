@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#060809">
+<meta name="color-scheme" content="dark">
+<title>ABOUT // SECTION 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="page.css">
+<script src="page.js" defer></script>
+</head>
+<body class="page">
+
+<header class="page-header">
+  <a href="../index.html" class="back-link">[ ← BACK TO HUD ]</a>
+  <span class="page-title">ABOUT // SOURCE // CREDITS</span>
+  <span class="page-id">// PAGE 07</span>
+  <nav class="page-nav">
+    <a href="tachikomas.html">tachikomas</a>
+    <a href="codex.html">codex</a>
+    <a href="foxhound.html">foxhound</a>
+    <a href="instrumentality.html">instrumentality</a>
+    <a href="puppetmaster.html">puppet master</a>
+    <a href="about.html" class="active">about</a>
+  </nav>
+</header>
+
+<main class="page-content">
+
+  <section class="page-hero">
+    <div class="page-hero-tag">SECTION 9 // OPERATOR HUD // ABOUT</div>
+    <h1 class="page-hero-h1">SECTION 9<small>creative artifact · cyberpunk hud · low-stakes</small></h1>
+    <p class="page-hero-lead">
+      A single-page operator dashboard inspired by <em>Ghost in the Shell</em>,
+      <em>The Matrix</em>, <em>Metal Gear Solid</em>, and <em>Neon Genesis Evangelion</em>.
+      Built as a personal artifact, not a product. No tracking, no analytics, no backend —
+      just HTML, CSS, JS, and a few CDN fonts. Yours to look at, walk around, type
+      easter eggs into, and close when you're done.
+    </p>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">01</span> WHAT IT IS</h2>
+    <p class="page-text">
+      The operator's HUD: a simulated command interface for an imagined unit that
+      doesn't exist. The squad roster references real services running on the
+      author's machine (Hermes, Batou, Watchdog, MCPs) restyled as Section 9 personnel.
+      The think-tanks are real Model Context Protocol servers. The Magi votes are
+      symbolic. The codec frequencies are jokes.
+    </p>
+    <p class="page-text">
+      It's a love letter. Mostly to <strong>Section 9</strong> as an aesthetic and
+      doctrine — the idea of a small unit of specialists watching the network for
+      anomalies — and to the four works that gave us the visual grammar for that.
+    </p>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">02</span> CREDITS — THE SOURCES</h2>
+    <div class="dossier-list">
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">1989 / 1995 / 2002</div>
+        <div class="dossier-item-name">GHOST IN THE SHELL</div>
+        <p class="dossier-item-bio">
+          By Masamune Shirow (manga), Mamoru Oshii (1995 film), Kenji Kamiyama
+          (Stand Alone Complex). Source of: Section 9, Tachikomas, Major Kusanagi,
+          Batou, ghost-line dialectic, "the net is vast and infinite," the Puppet Master
+          arc that gave the whole work its central question.
+        </p>
+      </article>
+
+      <article class="dossier-item cyan">
+        <div class="dossier-item-tag">1999 / 2003 / 2021</div>
+        <div class="dossier-item-name">THE MATRIX</div>
+        <p class="dossier-item-bio">
+          By the Wachowskis. Source of: the green digital rain, "wake up," the white
+          rabbit, kung fu, red/blue pill, Zion, Trinity, Morpheus, the Construct,
+          and the central image of the operator at a screen watching avatars in the net.
+        </p>
+      </article>
+
+      <article class="dossier-item orange">
+        <div class="dossier-item-tag">1987 → ongoing</div>
+        <div class="dossier-item-name">METAL GEAR SOLID</div>
+        <p class="dossier-item-bio">
+          By Hideo Kojima. Source of: FOXHOUND, codec frequencies, the cardboard box,
+          "kept you waiting, huh?", CQC, alert-mode exclamation marks, nanomachines,
+          tactical espionage operation, the Patriots and La-li-lu-le-lo, and the entire
+          tradition of staging political thought experiments inside a stealth game.
+        </p>
+      </article>
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">1995 / 1997 / 2007-2021</div>
+        <div class="dossier-item-name">NEON GENESIS EVANGELION</div>
+        <p class="dossier-item-bio">
+          By Hideaki Anno (Studio Gainax / Khara). Source of: NERV, the orange-and-black
+          color logic, A.T. Field, the Magi system (Balthasar / Melchior / Casper),
+          SEELE's twelve monoliths, pattern blue, the Lance of Longinus, and the entire
+          notion of <em>operator UIs as windows into existential dread</em>.
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">03</span> STACK</h2>
+    <dl class="dossier-item-grid" style="display:grid;grid-template-columns:160px 1fr;gap:6px 14px;font-size:12px;">
+      <dt>HTML / CSS / JS</dt><dd>vanilla, no framework, no build step</dd>
+      <dt>fonts</dt><dd>Orbitron · JetBrains Mono · Noto Sans JP (Google Fonts CDN)</dd>
+      <dt>3d dive</dt><dd>three.js v0.160 (lazy-loaded only when invoked)</dd>
+      <dt>audio</dt><dd>Web Audio API · two-oscillator drone · beeps via OscillatorNode</dd>
+      <dt>persistence</dt><dd>localStorage (visit count, last-visit timestamp) — that's it</dd>
+      <dt>fingerprint</dt><dd>canvas-derived hash · displayed for fun · not stored</dd>
+      <dt>accessibility</dt><dd>WCAG-aware · skip link · prefers-reduced-motion respected</dd>
+      <dt>pwa</dt><dd>manifest inline · installable</dd>
+      <dt>performance</dt><dd>requestAnimationFrame throttled · idle mode · pause-on-overlay</dd>
+      <dt>backend</dt><dd>none</dd>
+      <dt>analytics</dt><dd>none</dd>
+      <dt>tracking</dt><dd>none</dd>
+    </dl>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">04</span> SOURCE</h2>
+    <div class="dossier-list">
+      <article class="dossier-item cyan">
+        <div class="dossier-item-tag">REPOSITORY</div>
+        <div class="dossier-item-name">GITHUB</div>
+        <p class="dossier-item-bio">
+          Source code, issues, and discussion on GitHub. Pull requests welcome if you
+          spot a typo, want to add an angel, or have a better cardboard box ASCII.
+        </p>
+        <p style="margin-top:10px;">
+          <a href="https://github.com/victorbrusellaso-ctrl/section-9" class="back-link" style="display:inline-block;text-decoration:none;">
+            [ → github.com/victorbrusellaso-ctrl/section-9 ]
+          </a>
+        </p>
+      </article>
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">AUTHOR</div>
+        <div class="dossier-item-name">BRUS // M-001</div>
+        <p class="dossier-item-bio">
+          Built by B with iterative pair-programming via
+          <em>Claude Code</em> (Anthropic's CLI). Castellano peninsular, ghost-line stable,
+          tactical objective: build creative artifacts in spare cycles.
+        </p>
+        <p style="margin-top:10px;">
+          <a href="https://github.com/victorbrusellaso-ctrl" class="back-link" style="display:inline-block;text-decoration:none;">
+            [ → github.com/victorbrusellaso-ctrl ]
+          </a>
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">05</span> EASTER EGGS — HOW TO DRIVE</h2>
+    <p class="page-text">
+      Type a command into the <code>COMMAND // INPUT</code> box (top-right of the HUD)
+      and press Enter. There are about 70 of them. Hint rotates every 6.5 seconds.
+      Press <code>[ ? ] HELP</code> for the full list.
+    </p>
+    <p class="page-text">
+      A few favourites to start: <code>ramiel</code>, <code>tabris</code>, <code>dive</code>,
+      <code>foxhound</code>, <code>kojima</code>, <code>seele</code>,
+      <code>kept you waiting</code> (also <code>snake</code>),
+      <code>follow the white rabbit</code> (also <code>rabbit</code>), and
+      <code>nanomachines</code>. Plus the Konami code (↑↑↓↓←→←→ B A).
+    </p>
+    <p class="page-text">
+      Click on any of the 7 nodes in the <strong>NETWORK TOPOLOGY</strong> panel for
+      a dossier. The 5 squad cards are clickable. The 6 tachikomas are clickable.
+      The 5 right-column action buttons (<code>[PING]</code>, <code>[QUERY]</code>,
+      <code>[DEPLOY]</code>, <code>[INCOMING?]</code>, <code>[REFRESH]</code>) all do
+      something. The audio toggle in the top-left is real Web Audio.
+    </p>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">06</span> LICENCE / DISCLAIMER</h2>
+    <p class="page-text">
+      Code is MIT-licensed (see GitHub repository). Visual references and quotes are
+      tributes to their respective authors and rights-holders, used under fair-use /
+      transformative-work principles. <strong>This is fan-art, not commerce.</strong>
+      No money changes hands. No data is collected. No claim is made on the underlying
+      properties of the four source works credited above.
+    </p>
+    <blockquote class="page-quote">
+      "What we see and hear is shaped by our memories — and our memories are shaped by
+      what we see and hear."
+      <cite>— Major Kusanagi // Ghost in the Shell (1995, paraphrased)</cite>
+    </blockquote>
+  </section>
+
+</main>
+
+<div class="page-watermark" aria-hidden="true">
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M32 4 C46 14 56 28 56 40 C56 52 44 60 32 60 C20 60 8 52 8 40 C8 28 18 14 32 4 Z M32 12 C24 22 18 32 18 42 L46 42 C46 32 40 22 32 12 Z"/>
+  </svg>
+</div>
+
+<footer class="page-footer">
+  <span class="nerv-mini">
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <path class="leaf" d="M32 4 C46 14 56 28 56 40 C56 52 44 60 32 60 C20 60 8 52 8 40 C8 28 18 14 32 4 Z M32 12 C24 22 18 32 18 42 L46 42 C46 32 40 22 32 12 Z"/>
+    </svg>
+    NERV
+  </span>
+  god's in his heaven · all's right with the world · 2026
+</footer>
+
+</body>
+</html>
