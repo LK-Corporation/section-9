@@ -2351,10 +2351,16 @@ function bindOverlayClickOutside(){
     const t = e.target;
     if (!t || !t.classList) return;
     if (t.id === 'dossier'){ closeDossier(); return; }
-    const rootClasses = ['ovl', 'dive-overlay', 'help-modal', 'sac', 'seele', 'third-impact'];
+    // Any overlay root (clicked directly, not its children) → close everything
+    const rootClasses = ['ovl', 'dive-overlay', 'help-modal', 'sac', 'seele', 'third-impact',
+                         'eva-overlay', 'iruel-overlay', 'leliel-shadow', 'codec-call'];
     if (rootClasses.some(c => t.classList.contains(c))){
       closeAllOverlays();
     }
+  });
+  // Global: any keydown 'Escape' anywhere closes overlays (belt-and-suspenders for the Esc handler in keydown above)
+  document.addEventListener('keyup', (e) => {
+    if (e.key === 'Escape') closeAllOverlays();
   });
 }
 

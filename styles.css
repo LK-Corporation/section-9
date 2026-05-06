@@ -3344,14 +3344,21 @@
 
   /* ===== Mobile (≤900px) — vertical stack, no HUD lock ===== */
   @media (max-width: 900px) {
-    /* Allow scroll on the whole page */
+    /* Allow scroll on the whole page, prevent horizontal overflow */
     html, body {
-      overflow: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
       height: auto;
       min-height: 100vh;
       cursor: default;
+      width: 100%;
+      max-width: 100vw;
+      font-size: 12px;
     }
     body::after { display: none; } /* drop the radial vignette */
+    body::before { background-size: 100% 3px; } /* keep scanlines tight */
+    * { max-width: 100%; }
+    .hud, .grid, .center, .right, main { max-width: 100vw; box-sizing: border-box; }
 
     .hud {
       height: auto;
