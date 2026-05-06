@@ -1422,19 +1422,94 @@ function beep(freq, dur, type){
 function startAmbient(){
   try {
     const ctx = ensureAudio();
+    const master = ctx.createGain();
+    master.gain.value = 0.028;
+    master.connect(ctx.destination);
+
+    // Sub-bass foundation (~33 Hz)
+    const subOsc = ctx.createOscillator(); subOsc.type = 'sine'; subOsc.frequency.value = 33;
+    const subGain = ctx.createGain(); subGain.gain.value = 0.55;
+    subOsc.connect(subGain).connect(master);
+
+    // Lower drone (60 Hz)
     const osc1 = ctx.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = 60;
+    const g1 = ctx.createGain(); g1.gain.value = 0.55;
+    osc1.connect(g1).connect(master);
+
+    // Mid drone (90.5 Hz) with slow LFO breathing
     const osc2 = ctx.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = 90.5;
-    const gain = ctx.createGain(); gain.gain.value = 0.018;
-    osc1.connect(gain); osc2.connect(gain); gain.connect(ctx.destination);
-    osc1.start(); osc2.start();
-    ambientNodes = { osc1, osc2, gain };
+    const g2 = ctx.createGain(); g2.gain.value = 0.4;
+    osc2.connect(g2).connect(master);
+    const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.13;
+    const lfoGain = ctx.createGain(); lfoGain.gain.value = 1.6;
+    lfo.connect(lfoGain).connect(osc2.frequency);
+
+    // High shimmer (4.4 kHz, very quiet, modulated)
+    const shimmer = ctx.createOscillator(); shimmer.type = 'triangle'; shimmer.frequency.value = 4400;
+    const shimGain = ctx.createGain(); shimGain.gain.value = 0.045;
+    shimmer.connect(shimGain).connect(master);
+    const shimLfo = ctx.createOscillator(); shimLfo.type = 'sine'; shimLfo.frequency.value = 0.07;
+    const shimLfoGain = ctx.createGain(); shimLfoGain.gain.value = 0.04;
+    shimLfo.connect(shimLfoGain).connect(shimGain.gain);
+
+    subOsc.start(); osc1.start(); osc2.start(); lfo.start(); shimmer.start(); shimLfo.start();
+
+    // Heartbeat — irregular ~1.4s cadence, low thump (lub-dub)
+    let heartbeatId = null;
+    const heartbeat = () => {
+      if (!audioOn || !ambientNodes) return;
+      const t = ctx.currentTime;
+      // lub
+      const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = 55;
+      const g = ctx.createGain(); g.gain.value = 0;
+      o.connect(g).connect(master);
+      g.gain.linearRampToValueAtTime(0.18, t + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+      o.start(t); o.stop(t + 0.2);
+      // dub (smaller, slightly lower)
+      const t2 = t + 0.13;
+      const o2 = ctx.createOscillator(); o2.type = 'sine'; o2.frequency.value = 48;
+      const g2b = ctx.createGain(); g2b.gain.value = 0;
+      o2.connect(g2b).connect(master);
+      g2b.gain.linearRampToValueAtTime(0.1, t2 + 0.012);
+      g2b.gain.exponentialRampToValueAtTime(0.001, t2 + 0.16);
+      o2.start(t2); o2.stop(t2 + 0.18);
+      heartbeatId = setTimeout(heartbeat, 1300 + Math.random() * 280);
+    };
+    heartbeatId = setTimeout(heartbeat, 1400);
+
+    // Distant data packets — short high blip every 10-25s
+    let packetId = null;
+    const packetTick = () => {
+      if (!audioOn || !ambientNodes) return;
+      const t = ctx.currentTime;
+      const f = 1800 + Math.random() * 1400;
+      const o = ctx.createOscillator(); o.type = 'square'; o.frequency.value = f;
+      const g = ctx.createGain(); g.gain.value = 0;
+      o.connect(g).connect(master);
+      g.gain.linearRampToValueAtTime(0.012, t + 0.002);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+      o.start(t); o.stop(t + 0.08);
+      packetId = setTimeout(packetTick, 10000 + Math.random() * 15000);
+    };
+    packetId = setTimeout(packetTick, 7000 + Math.random() * 8000);
+
+    ambientNodes = {
+      master,
+      oscs: [subOsc, osc1, osc2, lfo, shimmer, shimLfo],
+      cancel: () => {
+        if (heartbeatId) clearTimeout(heartbeatId);
+        if (packetId) clearTimeout(packetId);
+      }
+    };
   } catch(e) {}
 }
 function stopAmbient(){
   if (ambientNodes){
     try {
-      ambientNodes.osc1.stop(); ambientNodes.osc2.stop();
-      ambientNodes.gain.disconnect();
+      if (ambientNodes.cancel) ambientNodes.cancel();
+      ambientNodes.oscs.forEach(o => { try { o.stop(); } catch(_){} });
+      ambientNodes.master.disconnect();
     } catch(e){}
     ambientNodes = null;
   }
