@@ -85,6 +85,8 @@
     display: grid;
     grid-template-rows: 78px 1fr 36px;
     animation: fadeIn 0.6s ease-in;
+    position: relative;
+    z-index: 1;
   }
   .placard-nav {
     display: flex;
@@ -2187,18 +2189,9 @@
   .boot-prog-row.done .name { color: var(--green); }
   .boot-prog-row.done .pct { color: var(--green); }
   .boot-title-stamp {
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 900;
-    font-size: 80px;
-    letter-spacing: 12px;
-    color: var(--green);
-    text-shadow: 0 0 16px var(--green-glow);
-    animation: stamp 0.7s ease-out;
-  }
-  @keyframes stamp {
-    0% { opacity: 0; transform: scale(2.5); filter: blur(8px); letter-spacing: 40px; }
-    60% { opacity: 1; transform: scale(0.95); filter: blur(0); letter-spacing: 8px; }
-    100% { transform: scale(1); letter-spacing: 12px; }
+    display: block;
+    margin: 0 auto 12px auto;
+    filter: drop-shadow(0 0 12px rgba(91,192,122,0.35));
   }
   .boot-subtitle {
     font-family: 'Orbitron', sans-serif;
@@ -2292,6 +2285,36 @@
     color: var(--red);
     animation: cmdShake 0.4s steps(4);
   }
+  .cmd-go {
+    flex-shrink: 0;
+    background: rgba(91,192,122,0.08);
+    color: var(--green);
+    border: 1px solid var(--green-dim);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    padding: 4px 8px;
+    cursor: pointer;
+    line-height: 1;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    text-shadow: 0 0 3px var(--green-glow);
+  }
+  .cmd-go:hover {
+    background: rgba(91,192,122,0.22);
+    border-color: var(--green);
+    box-shadow: 0 0 6px var(--green-glow);
+  }
+  .cmd-go:active { transform: scale(0.95); }
+  .cmd-go:focus-visible { outline: 1px solid var(--cyan); outline-offset: 2px; }
+  .cmd-go-key {
+    color: var(--gray);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .cmd-go:hover .cmd-go-key { color: var(--green); }
   @keyframes cmdShake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-3px); }
@@ -3343,6 +3366,180 @@
     .grid { grid-template-columns: 1fr 280px; }
   }
 
+  /* ===== CONFETTI BG (pixel-art bloques flotando, inspired by y-n10) ===== */
+  #confettiCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.95;
+  }
+  @media (max-width: 900px) {
+    #confettiCanvas { display: none; }
+  }
+
+  /* ===== ORDERS BOARD (replaces briefing) ===== */
+  .orders-board {
+    border: 1px solid var(--orange-dim);
+    background: linear-gradient(180deg, rgba(255,107,26,0.06) 0%, rgba(0,0,0,0.4) 100%);
+    padding: 8px 12px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 130px;
+  }
+  .orders-board::before, .orders-board::after {
+    content: '';
+    position: absolute;
+    width: 12px; height: 12px;
+    border-color: var(--orange);
+  }
+  .orders-board::before { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+  .orders-board::after { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
+
+  .orders-empty {
+    color: var(--gray-dim);
+    font-size: 11px;
+    font-style: italic;
+    text-align: center;
+    padding: 30px 0;
+    letter-spacing: 1px;
+  }
+
+  .order-row {
+    display: grid;
+    grid-template-columns: 56px 60px 70px 1fr 22px;
+    gap: 8px;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px dashed rgba(230,121,42,0.15);
+    font-size: 11px;
+    animation: orderRowIn 0.3s ease-out;
+  }
+  .order-row:last-child { border-bottom: none; }
+  @keyframes orderRowIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .order-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--gray);
+  }
+
+  .order-pill {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    padding: 3px 4px;
+    border: 1px solid;
+    cursor: pointer;
+    text-align: center;
+    user-select: none;
+    transition: all 0.15s;
+    outline: none;
+    line-height: 1;
+  }
+  .order-pill:hover { box-shadow: 0 0 6px currentColor; transform: translateX(1px); }
+  .order-pill:focus-visible { outline: 1px solid var(--cyan); outline-offset: 2px; }
+
+  .order-pill.prio-alpha {
+    color: var(--red);
+    border-color: var(--red);
+    background: rgba(217,69,69,0.08);
+  }
+  .order-pill.prio-bravo {
+    color: var(--orange);
+    border-color: var(--orange);
+    background: rgba(230,121,42,0.06);
+  }
+  .order-pill.prio-charlie {
+    color: var(--cyan);
+    border-color: var(--cyan-dim);
+    background: rgba(79,184,204,0.05);
+  }
+
+  .order-pill.status-active {
+    color: var(--green);
+    border-color: var(--green);
+    background: rgba(91,192,122,0.06);
+  }
+  .order-pill.status-paused {
+    color: var(--orange);
+    border-color: var(--orange);
+    background: rgba(230,121,42,0.06);
+  }
+  .order-pill.status-done {
+    color: var(--gray);
+    border-color: var(--gray-dim);
+    background: rgba(255,255,255,0.02);
+  }
+  .order-pill.status-standby {
+    color: var(--cyan);
+    border-color: var(--cyan-dim);
+    background: rgba(79,184,204,0.04);
+    animation: orderStandby 2s ease-in-out infinite;
+  }
+  @keyframes orderStandby {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+
+  .order-title {
+    font-size: 12px;
+    color: var(--green);
+    outline: none;
+    padding: 2px 4px;
+    border-bottom: 1px dashed transparent;
+    cursor: text;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .order-title:hover { border-bottom-color: var(--green-dim); }
+  .order-title:focus {
+    border-bottom-color: var(--cyan);
+    background: rgba(79,184,204,0.06);
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  .order-row.is-done .order-title {
+    color: var(--gray-dim);
+    text-decoration: line-through;
+  }
+
+  .order-del {
+    background: transparent;
+    border: 1px solid var(--gray-dim);
+    color: var(--gray);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    width: 22px; height: 22px;
+    font-family: monospace;
+    transition: all 0.15s;
+  }
+  .order-del:hover {
+    color: var(--red);
+    border-color: var(--red);
+    background: rgba(217,69,69,0.1);
+    box-shadow: 0 0 4px rgba(217,69,69,0.3);
+  }
+  .order-del:focus-visible { outline: 1px solid var(--cyan); outline-offset: 2px; }
+
+  .title-btn.disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
   /* ===== Mobile (≤900px) — vertical stack, no HUD lock ===== */
   @media (max-width: 900px) {
     /* Allow scroll on the whole page, prevent horizontal overflow */
@@ -3440,6 +3637,25 @@
     .ops-log { height: 130px; }
     .panel.topology { min-height: 220px; }
 
+    /* Orders board: stack title onto its own row, keep pills inline */
+    .order-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px 6px;
+      padding: 7px 0;
+    }
+    .order-num { flex: 0 0 auto; min-width: 50px; }
+    .order-pill { flex: 0 0 auto; min-height: 28px; padding: 5px 6px; }
+    .order-title {
+      flex: 1 1 100%;
+      order: 10;
+      font-size: 12px;
+      padding: 4px 2px;
+      white-space: normal;
+    }
+    .order-del { flex: 0 0 auto; margin-left: auto; min-width: 28px; min-height: 28px; }
+
     /* Audio toggle smaller and out of the way */
     .audio-toggle {
       top: auto;
@@ -3463,7 +3679,7 @@
 
     /* Boot scaled for phones */
     .boot-tw { font-size: 14px; min-height: 80px; }
-    .boot-title-stamp { font-size: 36px; letter-spacing: 4px; }
+    .boot-title-stamp { max-width: 80vw; height: auto; }
     .boot-nerv-glitch { font-size: 36px; letter-spacing: 6px; }
     .boot-subtitle { font-size: 10px; letter-spacing: 2px; padding: 0 12px; text-align: center; }
     .boot-tagline { font-size: 9px; letter-spacing: 3px; }

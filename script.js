@@ -237,6 +237,162 @@ async function runAuthChecks(){
   }
 }
 
+/* ============= PIXEL FONT 5x7 (boot stamp dot-matrix) ============= */
+const PIXEL_FONT_5x7 = {
+  'S': [' XXXX','X    ','X    ',' XXX ','    X','    X','XXXX '],
+  'E': ['XXXXX','X    ','X    ','XXXX ','X    ','X    ','XXXXX'],
+  'C': [' XXXX','X    ','X    ','X    ','X    ','X    ',' XXXX'],
+  'T': ['XXXXX','  X  ','  X  ','  X  ','  X  ','  X  ','  X  '],
+  'I': ['XXXXX','  X  ','  X  ','  X  ','  X  ','  X  ','XXXXX'],
+  'O': [' XXX ','X   X','X   X','X   X','X   X','X   X',' XXX '],
+  'N': ['X   X','XX  X','XX  X','X X X','X  XX','X  XX','X   X'],
+  '9': [' XXX ','X   X','X   X',' XXXX','    X','X   X',' XXX '],
+  ' ': ['     ','     ','     ','     ','     ','     ','     ']
+};
+
+function renderBootStamp(canvas, text){
+  const ctx = canvas.getContext('2d');
+  const cellSize = 9;
+  const cellGap = 2;
+  const charSpacing = 2;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  const pixels = [];
+  let curX = 0;
+  for (const ch of text){
+    const glyph = PIXEL_FONT_5x7[ch] || PIXEL_FONT_5x7[' '];
+    for (let row = 0; row < glyph.length; row++){
+      for (let col = 0; col < glyph[row].length; col++){
+        if (glyph[row][col] === 'X'){
+          pixels.push({ col: curX + col, row });
+        }
+      }
+    }
+    curX += glyph[0].length + charSpacing;
+  }
+
+  const totalCols = curX - charSpacing;
+  const totalRows = 7;
+  const w = totalCols * (cellSize + cellGap) - cellGap;
+  const h = totalRows * (cellSize + cellGap) - cellGap;
+
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  ctx.scale(dpr, dpr);
+
+  const totalDuration = 700;
+  for (const p of pixels){
+    p.lightAt = Math.random() * totalDuration;
+    const r = Math.random();
+    p.color = r < 0.04 ? '#4FB8CC' : (r < 0.07 ? '#E6792A' : '#5BC07A');
+  }
+
+  // pre-fill background with very dim grid (LCD-off cells)
+  const drawDimGrid = () => {
+    ctx.fillStyle = 'rgba(91,192,122,0.06)';
+    for (let row = 0; row < totalRows; row++){
+      for (let col = 0; col < totalCols; col++){
+        ctx.fillRect(col * (cellSize + cellGap), row * (cellSize + cellGap), cellSize, cellSize);
+      }
+    }
+  };
+
+  return new Promise((resolve) => {
+    const startTime = performance.now();
+    let beep1 = false, beep2 = false, beep3 = false;
+    function frame(now){
+      const elapsed = now - startTime;
+      ctx.clearRect(0, 0, w, h);
+      drawDimGrid();
+      for (const p of pixels){
+        if (elapsed >= p.lightAt){
+          const dt = Math.min(120, elapsed - p.lightAt);
+          ctx.globalAlpha = dt / 120;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.col * (cellSize + cellGap), p.row * (cellSize + cellGap), cellSize, cellSize);
+          ctx.globalAlpha = 1;
+        }
+      }
+      if (!beep1 && elapsed > 50)  { beep1 = true; try { beep(660, 0.05, 'square'); } catch(_){} }
+      if (!beep2 && elapsed > 280) { beep2 = true; try { beep(880, 0.05, 'square'); } catch(_){} }
+      if (!beep3 && elapsed > 520) { beep3 = true; try { beep(1100, 0.07, 'square'); } catch(_){} }
+      if (elapsed < totalDuration + 200){
+        requestAnimationFrame(frame);
+      } else {
+        resolve();
+      }
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
+/* ============= CONFETTI BG (pixel blocks drifting, inspired by y-n10) ============= */
+let confettiStarted = false;
+function startConfetti(){
+  if (confettiStarted) return;
+  const canvas = document.getElementById('confettiCanvas');
+  if (!canvas) return;
+  if (window.innerWidth < 900){ canvas.style.display = 'none'; return; }
+  confettiStarted = true;
+
+  const ctx = canvas.getContext('2d');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  function resize(){
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const palette = ['#5BC07A', '#4FB8CC', '#E6792A', '#d94545', '#d6b13a'];
+  const N = 90;
+  const blocks = Array.from({ length: N }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (0.25 + Math.random() * 0.55) * dpr * (Math.random() < 0.5 ? -1 : 1),
+    vy: (0.20 + Math.random() * 0.45) * dpr * (Math.random() < 0.7 ? -1 : 1),
+    size: (8 + Math.floor(Math.random() * 11)) * dpr,
+    color: palette[Math.floor(Math.random() * palette.length)],
+    twinklePhase: Math.random() * Math.PI * 2,
+    glow: Math.random() < 0.18
+  }));
+
+  let lastFrame = 0;
+  function frame(now){
+    if (now - lastFrame < 32){ requestAnimationFrame(frame); return; }
+    lastFrame = now;
+    if (hasFullscreenOverlay()){ requestAnimationFrame(frame); return; }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const b of blocks){
+      b.x += b.vx;
+      b.y += b.vy;
+      const m = b.size + 2;
+      if (b.x > canvas.width + m) b.x = -m;
+      else if (b.x < -m) b.x = canvas.width + m;
+      if (b.y > canvas.height + m) b.y = -m;
+      else if (b.y < -m) b.y = canvas.height + m;
+      const tw = 0.55 + 0.45 * Math.sin(now * 0.002 + b.twinklePhase);
+      ctx.globalAlpha = tw;
+      ctx.fillStyle = b.color;
+      if (b.glow){
+        ctx.shadowColor = b.color;
+        ctx.shadowBlur = 12;
+      } else {
+        ctx.shadowBlur = 0;
+      }
+      ctx.fillRect(Math.round(b.x), Math.round(b.y), b.size, b.size);
+    }
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
 async function runBoot(){
   // Skip the full boot animation if we've already booted in this session.
   // Lets the user navigate to /pages/* and back without sitting through 7s of typewriter again.
@@ -268,6 +424,8 @@ async function runBoot(){
   await sleep(450);
 
   showBootPhase(4);
+  const stampCanvas = document.getElementById('bootStampCanvas');
+  if (stampCanvas) renderBootStamp(stampCanvas, 'SECTION 9');
   await sleep(2300);
 
   const boot = document.getElementById('boot');
@@ -2364,29 +2522,44 @@ function bindOverlayClickOutside(){
   });
 }
 
+function submitCommand(){
+  const input = document.getElementById('cmdInput');
+  if (!input) return;
+  const cmd = input.value.toLowerCase().trim();
+  if (!cmd) return;
+  if (cmd === '?' || cmd === 'help'){
+    showHelp();
+    input.value = '';
+    beep(660, 0.05, 'square');
+    return;
+  }
+  if (EGG_SEQS[cmd]){
+    EGG_SEQS[cmd]();
+    input.value = '';
+    beep(880, 0.05, 'square');
+  } else {
+    triggerYouDied(cmd);
+    input.value = '';
+  }
+}
+
 function bindCommandInput(){
   const input = document.getElementById('cmdInput');
   if (!input) return;
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter'){
       e.preventDefault();
-      const cmd = input.value.toLowerCase().trim();
-      if (cmd === '?' || cmd === 'help'){
-        showHelp();
-        input.value = '';
-        beep(660, 0.05, 'square');
-        return;
-      }
-      if (EGG_SEQS[cmd]){
-        EGG_SEQS[cmd]();
-        input.value = '';
-        beep(880, 0.05, 'square');
-      } else if (cmd){
-        triggerYouDied(cmd);
-        input.value = '';
-      }
+      submitCommand();
     }
   });
+  const go = document.getElementById('cmdGo');
+  if (go){
+    go.addEventListener('click', (e) => {
+      e.preventDefault();
+      submitCommand();
+      input.focus();
+    });
+  }
 }
 
 /* ============= YOU DIED (Dark Souls homage on bad command) ============= */
@@ -2409,21 +2582,206 @@ function triggerYouDied(badCmd){
   pushOpsCustom('cmd-input', 'warn', 'unknown command // ' + (badCmd || ''));
 }
 
-/* ============= BRIEFING TOGGLE (active / paused / stand-down) ============= */
-const BRIEFING_STATES = ['ACTIVE', 'PAUSED', 'STAND-DOWN'];
-function bindBriefingToggle(){
-  const btn = document.getElementById('briefingStatus');
-  if (!btn) return;
-  btn.addEventListener('click', () => {
-    const current = btn.textContent.trim();
-    const idx = BRIEFING_STATES.indexOf(current);
-    const next = BRIEFING_STATES[(idx + 1) % BRIEFING_STATES.length];
-    btn.textContent = next;
-    btn.classList.remove('paused', 'standdown');
-    if (next === 'PAUSED') btn.classList.add('paused');
-    if (next === 'STAND-DOWN') btn.classList.add('standdown');
-    beep(next === 'STAND-DOWN' ? 220 : 660, 0.06, 'square');
-    pushOpsCustom('briefing', next === 'ACTIVE' ? 'ok' : 'warn', 'mission status // ' + next.toLowerCase());
+/* ============= ORDERS BOARD (replaces briefing) ============= */
+const ORDER_STATUSES = ['ACTIVE', 'PAUSED', 'DONE', 'STANDBY'];
+const ORDER_PRIORITIES = ['ALPHA', 'BRAVO', 'CHARLIE'];
+const ORDERS_KEY = 's9_orders_board';
+const ORDERS_MAX = 8;
+const ORDER_TITLE_MAX = 80;
+
+let orders = [];
+let nextOrderNum = 1;
+
+function escHtml(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function fmtOpNum(n){ return 'OP-' + String(n).padStart(3, '0'); }
+
+function loadOrders(){
+  try {
+    const raw = localStorage.getItem(ORDERS_KEY);
+    if (raw){
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length >= 0){
+        orders = parsed.filter(o => o && typeof o.id === 'string').map(o => ({
+          id: o.id,
+          num: Number.isFinite(o.num) ? o.num : 1,
+          title: typeof o.title === 'string' ? o.title.slice(0, ORDER_TITLE_MAX) : 'untitled',
+          status: ORDER_STATUSES.includes(o.status) ? o.status : 'ACTIVE',
+          priority: ORDER_PRIORITIES.includes(o.priority) ? o.priority : 'BRAVO'
+        }));
+        nextOrderNum = (orders.reduce((m, o) => Math.max(m, o.num || 0), 0) || 0) + 1;
+        return;
+      }
+    }
+  } catch(e){}
+  // first-run seed
+  const t = Date.now();
+  orders = [
+    { id: 'op-' + t + '-1', num: 1, title: 'sustain ecosystem', status: 'ACTIVE', priority: 'ALPHA' },
+    { id: 'op-' + t + '-2', num: 2, title: 'iterate section-9', status: 'ACTIVE', priority: 'BRAVO' }
+  ];
+  nextOrderNum = 3;
+  saveOrders();
+}
+
+function saveOrders(){
+  try { localStorage.setItem(ORDERS_KEY, JSON.stringify(orders)); } catch(e){}
+}
+
+function updateOrdersMeta(){
+  const meta = document.getElementById('ordersMeta');
+  if (!meta) return;
+  if (orders.length === 0){ meta.textContent = '0 deployed'; return; }
+  const active = orders.filter(o => o.status === 'ACTIVE').length;
+  const done = orders.filter(o => o.status === 'DONE').length;
+  meta.textContent = active + ' active // ' + done + ' done';
+}
+
+function renderOrders(){
+  const board = document.getElementById('ordersBoard');
+  if (!board) return;
+  if (orders.length === 0){
+    board.innerHTML = '<div class="orders-empty">no active orders // tap [+ NEW] to deploy // max 8</div>';
+  } else {
+    let html = '';
+    for (const o of orders){
+      const doneCls = o.status === 'DONE' ? ' is-done' : '';
+      html +=
+        '<div class="order-row' + doneCls + '" data-id="' + escHtml(o.id) + '">' +
+          '<span class="order-num">' + fmtOpNum(o.num) + '</span>' +
+          '<span class="order-pill prio prio-' + o.priority.toLowerCase() + '" data-action="prio" tabindex="0" role="button" aria-label="Priority ' + o.priority + ', click to cycle">' + o.priority + '</span>' +
+          '<span class="order-pill status status-' + o.status.toLowerCase() + '" data-action="status" tabindex="0" role="button" aria-label="Status ' + o.status + ', click to cycle">' + o.status + '</span>' +
+          '<span class="order-title" data-action="edit" contenteditable="true" spellcheck="false" aria-label="Order title, editable">' + escHtml(o.title) + '</span>' +
+          '<button class="order-del" data-action="del" type="button" aria-label="Delete order">×</button>' +
+        '</div>';
+    }
+    board.innerHTML = html;
+  }
+  updateOrdersMeta();
+  const addBtn = document.getElementById('ordersAddBtn');
+  if (addBtn){
+    if (orders.length >= ORDERS_MAX){
+      addBtn.classList.add('disabled');
+      addBtn.setAttribute('aria-disabled', 'true');
+    } else {
+      addBtn.classList.remove('disabled');
+      addBtn.removeAttribute('aria-disabled');
+    }
+  }
+}
+
+function actionAddOrder(){
+  if (orders.length >= ORDERS_MAX){
+    pushOpsCustom('orders', 'warn', 'cap reached // 8 max // clear done first');
+    beep(220, 0.06, 'sawtooth');
+    return;
+  }
+  const id = 'op-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
+  const o = { id, num: nextOrderNum++, title: 'new order', status: 'ACTIVE', priority: 'BRAVO' };
+  orders.push(o);
+  saveOrders();
+  renderOrders();
+  pushOpsCustom('orders', 'ok', 'order deployed // ' + fmtOpNum(o.num));
+  beep(880, 0.06, 'square');
+  setTimeout(() => {
+    const titleEl = document.querySelector('.order-row[data-id="' + o.id + '"] .order-title');
+    if (titleEl){
+      titleEl.focus();
+      const range = document.createRange();
+      range.selectNodeContents(titleEl);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }, 30);
+}
+
+function actionClearDone(){
+  const before = orders.length;
+  orders = orders.filter(o => o.status !== 'DONE');
+  const cleared = before - orders.length;
+  if (cleared > 0){
+    saveOrders();
+    renderOrders();
+    pushOpsCustom('orders', 'ok', 'cleared ' + cleared + ' completed // archive');
+    beep(440, 0.05, 'square');
+  } else {
+    pushOpsCustom('orders', 'warn', 'no done orders to clear');
+    beep(220, 0.04, 'sawtooth');
+  }
+}
+
+function bindOrdersBoard(){
+  const board = document.getElementById('ordersBoard');
+  if (!board) return;
+
+  board.addEventListener('click', (e) => {
+    const action = e.target.dataset && e.target.dataset.action;
+    if (!action) return;
+    const row = e.target.closest('.order-row');
+    if (!row) return;
+    const id = row.dataset.id;
+    const o = orders.find(x => x.id === id);
+    if (!o) return;
+    if (action === 'status'){
+      const idx = ORDER_STATUSES.indexOf(o.status);
+      o.status = ORDER_STATUSES[(idx + 1) % ORDER_STATUSES.length];
+      saveOrders();
+      renderOrders();
+      beep(o.status === 'DONE' ? 1320 : (o.status === 'PAUSED' ? 440 : 660), 0.05, 'square');
+      pushOpsCustom('orders', o.status === 'PAUSED' ? 'warn' : 'ok', fmtOpNum(o.num) + ' // ' + o.status.toLowerCase());
+    } else if (action === 'prio'){
+      const idx = ORDER_PRIORITIES.indexOf(o.priority);
+      o.priority = ORDER_PRIORITIES[(idx + 1) % ORDER_PRIORITIES.length];
+      saveOrders();
+      renderOrders();
+      beep(550, 0.04, 'square');
+    } else if (action === 'del'){
+      orders = orders.filter(x => x.id !== id);
+      saveOrders();
+      renderOrders();
+      beep(220, 0.06, 'sawtooth');
+      pushOpsCustom('orders', 'warn', fmtOpNum(o.num) + ' // scrubbed');
+    }
+  });
+
+  board.addEventListener('keydown', (e) => {
+    const action = e.target.dataset && e.target.dataset.action;
+    if (action && action !== 'edit' && (e.key === 'Enter' || e.key === ' ')){
+      e.preventDefault();
+      e.target.click();
+    }
+    if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('order-title')){
+      e.preventDefault();
+      e.target.blur();
+    }
+  });
+
+  board.addEventListener('blur', (e) => {
+    if (!e.target.classList || !e.target.classList.contains('order-title')) return;
+    const row = e.target.closest('.order-row');
+    if (!row) return;
+    const o = orders.find(x => x.id === row.dataset.id);
+    if (!o) return;
+    const newTitle = (e.target.textContent || '').replace(/\s+/g, ' ').trim().slice(0, ORDER_TITLE_MAX);
+    if (newTitle && newTitle !== o.title){
+      o.title = newTitle;
+      saveOrders();
+      updateOrdersMeta();
+      pushOpsCustom('orders', 'ok', fmtOpNum(o.num) + ' // updated');
+    } else if (!newTitle){
+      e.target.textContent = o.title;
+    }
+  }, true);
+
+  board.addEventListener('paste', (e) => {
+    if (!e.target.classList || !e.target.classList.contains('order-title')) return;
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\s+/g, ' ').trim();
+    document.execCommand('insertText', false, text.slice(0, ORDER_TITLE_MAX));
   });
 }
 
@@ -2694,7 +3052,10 @@ function startMainLoops(){
   bindActivityTracking();
   bindOverlayClickOutside();
   bindLeftPanels();
-  bindBriefingToggle();
+  loadOrders();
+  renderOrders();
+  bindOrdersBoard();
+  startConfetti();
   bindCodecRows();
   bindMotherBase();
 

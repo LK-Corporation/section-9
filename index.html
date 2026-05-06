@@ -48,11 +48,13 @@
   </div>
 
   <div class="boot-phase hidden" id="bp4">
-    <div class="boot-title-stamp">SECTION 9</div>
+    <canvas class="boot-title-stamp" id="bootStampCanvas" aria-label="SECTION 9"></canvas>
     <div class="boot-subtitle">PUBLIC SECURITY // CYBER-BRAIN DIVISION</div>
     <div class="boot-tagline">TACTICAL ESPIONAGE OPERATION</div>
   </div>
 </div>
+
+<canvas id="confettiCanvas" aria-hidden="true"></canvas>
 
 <div id="hud" class="hud hidden">
   <header class="placard">
@@ -191,29 +193,13 @@
 
       <div class="section-title">
         <span class="num">04</span>
-        <span class="lbl">CURRENT MISSION BRIEFING</span>
+        <span class="lbl">ORDERS BOARD // ACTIVE OPS</span>
+        <span class="meta" id="ordersMeta">--</span>
+        <button class="title-btn orange" id="ordersAddBtn" onclick="actionAddOrder()">[+ NEW]</button>
+        <button class="title-btn orange" onclick="actionClearDone()">[CLEAR DONE]</button>
         <span class="rule"></span>
       </div>
-      <div class="briefing">
-        <div class="briefing-head">
-          <span class="briefing-tag">OP // GHOST IN THE SHELL</span>
-          <button class="briefing-status" id="briefingStatus" type="button" aria-label="Toggle mission status">ACTIVE</button>
-        </div>
-        <div class="briefing-name">SUSTAIN ECOSYSTEM</div>
-        <div style="font-size:11px; color:var(--gray); line-height:1.6;">
-          Maintain operational integrity across cyber-brain cluster.
-          Vault index synchronized. Defensive barriers nominal. No idea-objective
-          inbound — squad standing by for tactical opportunity.
-        </div>
-        <dl class="briefing-grid">
-          <dt>theater</dt><dd>cross-host // win + kali</dd>
-          <dt>duration</dt><dd>open-ended</dd>
-          <dt>command</dt><dd>brus // M-001</dd>
-          <dt>doctrine</dt><dd>simplify before adding</dd>
-          <dt>adversary</dt><dd>complexity drift</dd>
-          <dt>extraction</dt><dd>recovery.md // age-shell</dd>
-        </dl>
-      </div>
+      <div class="orders-board" id="ordersBoard" aria-live="polite"></div>
     </section>
 
     <aside class="right">
@@ -224,7 +210,8 @@
         </div>
         <div class="cmd-row">
           <span class="cmd-prompt">&gt;</span>
-          <input type="text" class="cmd-input" id="cmdInput" placeholder="type here... ramiel, dive, tabris..." autocomplete="off" spellcheck="false" aria-label="Command input — type an easter egg name and press Enter">
+          <input type="text" class="cmd-input" id="cmdInput" placeholder="type here... ramiel, dive, tabris..." autocomplete="off" spellcheck="false" aria-label="Command input — type an easter egg name and press Enter or click EXEC">
+          <button type="button" class="cmd-go" id="cmdGo" aria-label="Execute command">EXEC <span class="cmd-go-key">↵</span></button>
         </div>
         <div class="cmd-hint" id="cmdHint">HINT: try <b>ramiel</b> // eva angel</div>
       </div>
