@@ -28,6 +28,7 @@
     <a href="lain.html">lain</a>
     <a href="about.html">about</a>
   </nav>
+  <a href="tachikomas.es.html" class="lang-toggle" lang="es" hreflang="es" title="Cambiar a castellano">[ ES ]</a>
 </header>
 
 <main class="page-content">
@@ -37,10 +38,10 @@
     <h1 class="page-hero-h1">TACHIKOMAS<small>MCP think-tanks · 6 deployed · 2 hosts</small></h1>
     <p class="page-hero-lead">
       Six AI-augmented spider tanks operating across two hosts. Each one wraps a single
-      capability behind the <code>EXEC_MODE=local</code> protocol — Hermes Gateway dispatches
+      capability behind the <span class="defterm green" data-def="Patch in shared/src/ssh.mjs (Tier 4-P refactor, 2026-04-30) that bypasses the SSH layer when the tachikoma is co-located with Hermes Gateway. Faster invocation, no remote handshake. Each MCP runs as a local stdio process and Hermes resolves to a local handle.">EXEC_MODE=local</span> protocol — <span class="defterm green" data-def="The MCP dispatch layer. Holds the routing table for every tachikoma. When Batou invokes cve-lookup.query(...), Hermes resolves the call to a local stdio handle on the same host and returns the result. Runs as a systemd unit (hermes-gateway.service) on Kali.">Hermes Gateway</span> dispatches
       requests, the tachikoma resolves locally without round-tripping over SSH.
       Most run on the deep-dive node (Kali VM); the most popular one runs on the operator's
-      Windows host because the Vault lives there.
+      Windows host because <span class="defterm" data-def="Markdown wiki of soft knowledge — entities, concepts, projects, raw transcripts. ~153 active pages. The single source of operator long-term memory; the cyber-brain consults it before every nontrivial decision.">the Vault</span> lives there.
     </p>
   </section>
 
@@ -166,8 +167,8 @@
     <h2 class="page-section-h"><span class="num">02</span> COORDINATION DOCTRINE</h2>
     <p class="page-text">
       Tachikomas don't share state. Each one is a pure function: input → output, no memory.
-      Memory lives in the <strong>cyber-brain (Batou)</strong> who orchestrates them, plus
-      <strong>Honcho dialectic</strong> (long-term patterns) and the <strong>Vault</strong>
+      Memory lives in the <span class="defterm green" data-def="Field operative F-002. Runs on gemini-2.5-flash via OpenRouter. SOUL.md routing across 3 sources (vault / honcho / conversation). Telegram bridge open. The orchestrator that decides which tachikoma to invoke and when.">cyber-brain (Batou)</span> who orchestrates them, plus
+      <span class="defterm green" data-def="Long-term memory layer. Workspace: 'batou'. Stores dialectic patterns and cross-session context that the conversation buffer can't hold. Auto-injected into Batou's context at each turn for cumulative memory.">Honcho dialectic</span> (long-term patterns) and <span class="defterm" data-def="Markdown wiki of soft knowledge — entities, concepts, projects, raw transcripts. ~153 active pages. The single source of operator long-term memory; the cyber-brain consults it before every nontrivial decision.">the Vault</span>
       (knowledge base). This is intentional — keeps each unit replaceable, testable,
       <em>independent but together.</em>
     </p>
@@ -177,7 +178,7 @@
       <code>cve-lookup.query("CVE-2026-12345")</code>, Hermes resolves it to a local stdio
       handle on Kali, no SSH round-trip. The <code>EXEC_MODE=local</code> patch in
       <code>shared/src/ssh.mjs</code> bypasses the SSH layer when the tachikoma is co-located
-      with the gateway. Patch applied during Tier 4-P refactor.
+      with the gateway. Patch applied during <span class="defterm orange" data-def="Internal tier identifier for the 2026-04-30 monorepo refactor that ported the MCPs to Kali and added the EXEC_MODE=local bypass. Eliminated the SSH round-trip overhead for co-located tachikomas. Backed up in shared/src/ssh.mjs.bak before patching.">Tier 4-P refactor</span>.
     </p>
 
     <blockquote class="page-quote">

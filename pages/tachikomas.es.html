@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#060809">
+<meta name="color-scheme" content="dark">
+<title>UNIDADES TACHIKOMA // SECTION 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="page.css">
+<script src="page.js" defer></script>
+</head>
+<body class="page">
+
+<header class="page-header">
+  <a href="../index.html" class="back-link">[ ← VOLVER AL HUD ]</a>
+  <span class="page-title">UNIDADES TACHIKOMA // DOSIER</span>
+  <span class="page-id">// PÁGINA 02</span>
+  <nav class="page-nav">
+    <a href="tachikomas.es.html" class="active">tachikomas</a>
+    <a href="codex.html">codex</a>
+    <a href="foxhound.html">foxhound</a>
+    <a href="instrumentality.html">instrumentality</a>
+    <a href="puppetmaster.html">puppet master</a>
+    <a href="lain.es.html">lain</a>
+    <a href="about.html">about</a>
+  </nav>
+  <a href="tachikomas.html" class="lang-toggle" lang="en" hreflang="en" title="Switch to English">[ EN ]</a>
+</header>
+
+<main class="page-content">
+
+  <section class="page-hero">
+    <div class="page-hero-tag">SECTION 9 // DIVISIÓN CIBERCEREBRO // ROSTER DE THINK-TANKS</div>
+    <h1 class="page-hero-h1">TACHIKOMAS<small>think-tanks MCP · 6 desplegadas · 2 hosts</small></h1>
+    <p class="page-hero-lead">
+      Seis tanques araña aumentados por IA operando entre dos hosts. Cada uno
+      envuelve una sola capacidad detrás del protocolo
+      <span class="defterm green" data-def="Parche en shared/src/ssh.mjs (refactor Tier 4-P, 2026-04-30) que evita la capa SSH cuando la tachikoma está co-localizada con Hermes Gateway. Invocación más rápida, sin handshake remoto. Cada MCP corre como proceso stdio local y Hermes lo resuelve a un handle local.">EXEC_MODE=local</span> — <span class="defterm green" data-def="La capa de dispatch de los MCPs. Mantiene la tabla de routing de cada tachikoma. Cuando Batou invoca cve-lookup.query(...), Hermes resuelve la llamada a un handle stdio local en el mismo host y devuelve el resultado. Corre como unidad systemd (hermes-gateway.service) en Kali.">Hermes Gateway</span> reparte
+      las peticiones, la tachikoma resuelve en local sin ir y volver por SSH.
+      La mayoría corren en el nodo de deep-dive (VM Kali); la más popular corre en el host
+      Windows del operador porque <span class="defterm" data-def="Wiki Markdown de conocimiento blando — entidades, conceptos, proyectos, raws de transcripciones. ~153 páginas activas. La única fuente de memoria a largo plazo del operador; el cibercerebro lo consulta antes de cada decisión no trivial.">el Vault</span> vive ahí.
+    </p>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">01</span> UNIDADES ACTIVAS</h2>
+
+    <div class="dossier-list">
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-006 // RECON</div>
+        <div class="dossier-item-name">CVE-LOOKUP</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>kali // deep-dive</dd>
+          <dt>stack</dt><dd>MCP stdio en node.js</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>habilidades</dt><dd>consulta NVD · scoring CVSS · pistas de parche</dd>
+          <dt>uptime</dt><dd>desde tier 4-P (30-04-2026)</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>«¡Hola Brus! Hoy busco CVEs y los explico bonito.»</em><br>
+          Envuelve los feeds NVD/MITRE. Dado un CVE-ID, devuelve severidad, vector,
+          aviso del fabricante y una explicación de una línea en lenguaje claro.
+          Reposo casi siempre — solo se dispara cuando Batou pregunta por una
+          vulnerabilidad.
+        </p>
+      </article>
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-007 // RECON</div>
+        <div class="dossier-item-name">KALI-RECON</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>kali // deep-dive</dd>
+          <dt>stack</dt><dd>wrapper de shell (nmap, whois, dig)</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>habilidades</dt><dd>nmap · whois · recon DNS</dd>
+          <dt>caveat</dt><dd>tachikoma echando la siesta (0 ops)</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>«¡Brus-san! Tengo nmap y ganas de escanear.»</em><br>
+          Provee un wrapper estructurado alrededor de las herramientas CLI de recon
+          estándar para que el operador no tenga que tirar de shell a mano.
+          Conservadora por defecto: SYN scan, top-1000 puertos, rate-limited.
+        </p>
+      </article>
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-008 // RECON</div>
+        <div class="dossier-item-name">WEB-RECON</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>kali // deep-dive</dd>
+          <dt>stack</dt><dd>node.js + fetch headless</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>habilidades</dt><dd>headers · auditoría TLS · fingerprint de tecnología</dd>
+          <dt>uptime</dt><dd>desde 30-04-2026</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>«Encontré 12 endpoints abiertos esta semana, ¿no? ¡Espera, son cero!»</em><br>
+          Mapea la superficie de ataque pública de un host: cabeceras abiertas,
+          cadena de certificados, detección de framework. Devuelve JSON. No
+          rastrea en profundidad — ese no es su trabajo.
+        </p>
+      </article>
+
+      <article class="dossier-item cyan">
+        <div class="dossier-item-tag">T-009 // BRIDGE</div>
+        <div class="dossier-item-name">VAULT-BRIDGE</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>win // operador</dd>
+          <dt>stack</dt><dd>servicio HTTP :3142</dd>
+          <dt>exec</dt><dd>HTTP local (cross-host vía tailnet)</dd>
+          <dt>habilidades</dt><dd>read_page · write_page · list_pages</dd>
+          <dt>actividad</dt><dd>ops a diario · la unidad más popular</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>«¡Yo sí trabajo! Soy el más popular de la unidad.»</em><br>
+          El puente entre el cibercerebro (Batou en Kali) y el vault de
+          conocimiento blando (wiki Markdown en Windows). La tachikoma con más
+          volumen del escuadrón. Watchdog la patrulla cada 60s. Sin ella, Batou
+          es ciego a la memoria a largo plazo del operador.
+        </p>
+      </article>
+
+      <article class="dossier-item orange">
+        <div class="dossier-item-tag">T-010 // COMM</div>
+        <div class="dossier-item-name">NOTIFY-VOLTRON</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>kali // deep-dive</dd>
+          <dt>stack</dt><dd>HTTP POST → :3141 (tailnet)</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>habilidades</dt><dd>push a Telegram · relay Voltron</dd>
+          <dt>actividad</dt><dd>solo bajo demanda</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>«Yo solo paso mensajes. Soy un cartero feliz.»</em><br>
+          Pasarela de comunicaciones salientes. Hace POST a un endpoint HTTP de
+          Voltron que, a su vez, hace relay a Telegram. Se usa para alertas
+          canary (éxito de backup, scout completado) y notificaciones ad-hoc.
+          Autenticación con un <code>NOTIFY_SECRET</code> compartido.
+        </p>
+      </article>
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-011 // ANÁLISIS</div>
+        <div class="dossier-item-name">CLAUDE-DEEP</div>
+        <dl class="dossier-item-grid">
+          <dt>host</dt><dd>kali // deep-dive</dd>
+          <dt>stack</dt><dd>CLI claude-code v2.1.126</dd>
+          <dt>modelo</dt><dd>claude-sonnet-4-6</dd>
+          <dt>habilidades</dt><dd>razonamiento profundo · contexto 50K chars</dd>
+          <dt>timeout</dt><dd>300s (era 120s, arreglado 05-05-2026)</dd>
+          <dt>actividad</dt><dd>ops semanales</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>«Cuando Batou no da con algo, me llama. Me siento útil.»</em><br>
+          Fallback de razonamiento pesado. Cuando el operativo de campo (Batou,
+          Gemini Flash) toca techo en un análisis complejo, esta unidad toma el
+          relevo con Sonnet 4.6 y una ventana de contexto más larga. Lenta pero
+          minuciosa. Se usa para auditorías de seguridad, revisión arquitectural,
+          síntesis de formato largo.
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">02</span> DOCTRINA DE COORDINACIÓN</h2>
+    <p class="page-text">
+      Las tachikomas no comparten estado. Cada una es una función pura:
+      entrada → salida, sin memoria. La memoria vive en el
+      <span class="defterm green" data-def="Operativo de campo F-002. Corre con gemini-2.5-flash vía OpenRouter. Routing SOUL.md sobre 3 fuentes (vault / honcho / conversación). Bridge a Telegram abierto. El orquestador que decide qué tachikoma invocar y cuándo.">cibercerebro (Batou)</span> que las orquesta, más la
+      <span class="defterm green" data-def="Capa de memoria a largo plazo. Workspace: 'batou'. Almacena patrones dialécticos y contexto cross-sesión que el buffer de la conversación no puede aguantar. Se auto-inyecta en el contexto de Batou en cada turno para una memoria acumulativa.">dialéctica Honcho</span> (patrones a largo plazo) y <span class="defterm" data-def="Wiki Markdown de conocimiento blando — entidades, conceptos, proyectos, raws de transcripciones. ~153 páginas activas. La única fuente de memoria a largo plazo del operador; el cibercerebro lo consulta antes de cada decisión no trivial.">el Vault</span>
+      (knowledge base). Es intencional — mantiene cada unidad reemplazable,
+      testeable, <em>independientes pero juntas.</em>
+    </p>
+
+    <p class="page-text">
+      Hermes Gateway tiene la tabla de dispatch. Cuando Batou invoca
+      <code>cve-lookup.query("CVE-2026-12345")</code>, Hermes lo resuelve a un
+      handle stdio local en Kali, sin ida y vuelta por SSH. El parche
+      <code>EXEC_MODE=local</code> en <code>shared/src/ssh.mjs</code> evita la
+      capa SSH cuando la tachikoma está co-localizada con la gateway. Parche
+      aplicado durante el <span class="defterm orange" data-def="Identificador interno de fase del refactor del monorepo del 30-04-2026 que portó las MCPs a Kali y añadió el bypass EXEC_MODE=local. Eliminó el coste de la ida y vuelta por SSH para tachikomas co-localizadas. Hay backup en shared/src/ssh.mjs.bak antes del parcheo.">refactor Tier 4-P</span>.
+    </p>
+
+    <blockquote class="page-quote">
+      «Estamos solas, pero estamos juntas.»
+      <cite>— Tachikoma // Stand Alone Complex (parafraseado)</cite>
+    </blockquote>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">03</span> RECLUTAMIENTO // PLAZAS LIBRES</h2>
+    <p class="page-text">
+      Hay una plaza vacante (<code>V-006</code>). Condiciones para promover una
+      tachikoma candidata a servicio activo:
+    </p>
+    <ul class="page-text" style="list-style:none;padding-left:14px;">
+      <li>· Una sola capacidad, bien definida.</li>
+      <li>· Sin estado — sin estado mutable compartido con otras unidades.</li>
+      <li>· Ejecución local preferible (evitar idas y vueltas por la red).</li>
+      <li>· Logs en <code>~/logs/&lt;unit&gt;.log</code> con JSON estructurado.</li>
+      <li>· Muere de forma elegante al apagarse Hermes.</li>
+    </ul>
+    <p class="page-text">
+      Candidatas en consideración actual: un lector de finanzas/spreadsheet, un
+      bridge de calendario, un helper de ingesta de arXiv. Ninguna promovida
+      todavía — la doctrina del operador es <em>simplificar antes que añadir</em>.
+    </p>
+  </section>
+
+</main>
+
+<div class="page-watermark cyan" aria-hidden="true">
+  <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2">
+    <ellipse cx="100" cy="60" rx="60" ry="32"/>
+    <circle cx="80" cy="55" r="9"/>
+    <circle cx="120" cy="55" r="9"/>
+    <line x1="50" y1="80" x2="20" y2="140"/>
+    <line x1="80" y1="90" x2="60" y2="150"/>
+    <line x1="120" y1="90" x2="140" y2="150"/>
+    <line x1="150" y1="80" x2="180" y2="140"/>
+    <line x1="20" y1="142" x2="180" y2="142" stroke-dasharray="4 4"/>
+  </svg>
+</div>
+
+<footer class="page-footer">
+  <span class="nerv-mini">
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <path class="leaf" d="M32 4 C46 14 56 28 56 40 C56 52 44 60 32 60 C20 60 8 52 8 40 C8 28 18 14 32 4 Z M32 12 C24 22 18 32 18 42 L46 42 C46 32 40 22 32 12 Z"/>
+    </svg>
+    NERV
+  </span>
+  SECTION 9 // SEGURIDAD PÚBLICA // DIVISIÓN CIBERCEREBRO
+</footer>
+
+</body>
+</html>
