@@ -52,10 +52,35 @@ body.page {
   grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 16px;
-  padding: 12px 24px;
+  padding: 12px 80px 12px 24px;  /* extra right padding for lang toggle */
   background: var(--bg2);
   border-bottom: 1px solid var(--green-dim);
   backdrop-filter: blur(4px);
+}
+
+.lang-toggle {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  color: var(--cyan);
+  text-decoration: none;
+  border: 1px solid var(--cyan-dim);
+  padding: 4px 9px;
+  background: rgba(79,184,204,0.06);
+  transition: all 0.15s;
+  z-index: 110;
+}
+.lang-toggle:hover {
+  border-color: var(--cyan);
+  background: rgba(79,184,204,0.18);
+  box-shadow: 0 0 6px rgba(79,184,204,0.35);
+}
+.lang-toggle:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 2px;
 }
 .page-header::before, .page-header::after {
   content: '';
@@ -552,9 +577,73 @@ body.page {
   .page-header {
     grid-template-columns: 1fr;
     gap: 8px;
+    padding: 12px 60px 12px 16px;
   }
   .page-hero-h1 { font-size: 32px; letter-spacing: 4px; }
   .page-modal-card { padding: 24px 22px; }
   .page-modal-card .dossier-item-name,
   .page-modal-card .angel-name { font-size: 24px; letter-spacing: 3px; }
+  .lang-toggle { top: 10px; right: 12px; font-size: 8px; padding: 3px 7px; }
+}
+
+/* ===== Defterm — hover-explained terms ===== */
+.defterm {
+  border-bottom: 1px dotted var(--cyan-dim);
+  cursor: help;
+  transition: color 0.2s, border-color 0.2s;
+  color: var(--cyan);
+  font-style: normal;
+}
+.defterm:hover {
+  color: var(--cyan);
+  border-bottom-color: var(--cyan);
+  text-shadow: 0 0 4px rgba(79,184,204,0.4);
+}
+.defterm.green { color: var(--green); border-bottom-color: var(--green-dim); }
+.defterm.green:hover { color: var(--green); border-bottom-color: var(--green); text-shadow: 0 0 4px var(--green-glow); }
+.defterm.orange { color: var(--orange); border-bottom-color: var(--orange-dim); }
+.defterm.orange:hover { color: var(--orange); border-bottom-color: var(--orange); text-shadow: 0 0 4px rgba(230,121,42,0.45); }
+
+.def-tooltip {
+  position: fixed;
+  z-index: 950;
+  background: var(--bg2);
+  border: 1px solid var(--cyan);
+  box-shadow: 0 0 12px rgba(79,184,204,0.35);
+  padding: 10px 14px;
+  max-width: 320px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+}
+.def-tooltip.show { opacity: 1; transform: translateY(0); }
+.def-tooltip::before, .def-tooltip::after {
+  content: '';
+  position: absolute;
+  width: 8px; height: 8px;
+  border-color: var(--cyan);
+}
+.def-tooltip::before { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+.def-tooltip::after { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
+
+.def-tooltip-term {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--cyan);
+  text-shadow: 0 0 3px var(--cyan-dim);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+.def-tooltip-body {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--gray);
+}
+
+@media (max-width: 720px) {
+  .def-tooltip { max-width: 86vw; font-size: 12px; padding: 12px 14px; }
 }
