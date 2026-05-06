@@ -902,6 +902,7 @@ document.addEventListener('keydown', (e) => {
     konamiIdx++;
     if (konamiIdx === KONAMI.length){
       triggerSAC();
+      markEggDiscovered('sac');
       konamiIdx = 0;
     }
   } else {
@@ -1573,38 +1574,87 @@ function actionFloodOps(){
 const NODE_INFO = {
   brus: {
     title: 'BRUS // M-001', sub: 'CHIEF OPERATOR',
-    color: 'green',
-    info: 'Human-natural. Director operativo de Section 9. No delega comando táctico. Castellano peninsular como lengua franca de la unidad.'
+    color: 'green', status: 'ONLINE',
+    info: 'Human-natural. Director operativo de Section 9. No delega comando táctico. Castellano peninsular como lengua franca de la unidad.',
+    stats: [
+      ['rank', 'M-001 // chief'],
+      ['ghost-line', 'stable'],
+      ['session', 'active'],
+      ['delegate', 'never']
+    ],
+    connects: ['vault', 'tech', 'personal', 'kali']
   },
   vault: {
     title: 'VAULT', sub: 'KNOWLEDGE BASE',
-    color: 'green',
-    info: '153 active pages // entidades + conceptos + proyectos + raw // qué decir y cómo pensar // memoria persistente de conocimiento blando.'
+    color: 'green', status: 'ONLINE',
+    info: '153 active pages // entidades + conceptos + proyectos + raw // qué decir y cómo pensar // memoria persistente de conocimiento blando.',
+    stats: [
+      ['pages', '153 active'],
+      ['indexes', 'persona // sector // tema'],
+      ['last write', '~2h ago'],
+      ['lock state', 'unlocked']
+    ],
+    connects: ['brus', 'tech']
   },
   tech: {
     title: 'TECH', sub: 'TECHNOLOGY LIBRARY',
-    color: 'green',
-    info: 'Biblioteca de tecnologías, stacks y patrones de implementación reutilizables // cómo construir lo que el vault sugiere.'
+    color: 'green', status: 'ONLINE',
+    info: 'Biblioteca de tecnologías, stacks y patrones de implementación reutilizables // cómo construir lo que el vault sugiere.',
+    stats: [
+      ['scope', 'stacks // patterns'],
+      ['mode', 'reference-only'],
+      ['indexes', 'language // domain'],
+      ['linked from', 'vault, personal']
+    ],
+    connects: ['brus', 'vault', 'personal']
   },
   personal: {
     title: 'PERSONAL', sub: 'INFRA + DEPLOYMENT',
-    color: 'green',
-    info: 'Infra propia // Brus retirado // Voltron pausado // Watchdog patrolling // KeePass master humano // SOPS+age pipeline. MIS instancias y decisiones.'
+    color: 'green', status: 'ONLINE',
+    info: 'Infra propia // Brus retirado // Voltron pausado // Watchdog patrolling // KeePass master humano // SOPS+age pipeline. MIS instancias y decisiones.',
+    stats: [
+      ['secrets', 'KeePass + SOPS+age'],
+      ['watchdog', 'patrolling'],
+      ['voltron', 'dormant'],
+      ['repo', 'private // pushed']
+    ],
+    connects: ['brus', 'tech']
   },
   kali: {
     title: 'KALI // DEEP DIVE NODE', sub: 'PENTEST + GATEWAY HOST',
-    color: 'cyan',
-    info: 'VirtualBox VM 2026.1 // Tailscale 100.125.246.37 // host de Hermes Gateway + 5 stdio MCPs (cve, kali-recon, web-recon, notify, claude-deep) // EXEC_MODE=local bypass.'
+    color: 'cyan', status: 'ONLINE',
+    info: 'VirtualBox VM 2026.1 // Tailscale mesh // host de Hermes Gateway + 5 stdio MCPs (cve, kali-recon, web-recon, notify, claude-deep) // EXEC_MODE=local bypass.',
+    stats: [
+      ['vm', 'kali 2026.1 // vbox'],
+      ['mesh', 'tailscale // private'],
+      ['mcps', '5 stdio + 1 sse'],
+      ['exec mode', 'local // ssh-bypass']
+    ],
+    connects: ['brus', 'hermes-svc', 'batou-svc']
   },
   'hermes-svc': {
     title: 'HERMES // GATEWAY', sub: 'COMM RELAY v0.12.0',
-    color: 'green',
-    info: 'systemd unit hermes-gateway.service // ExecStartPre healthcheck // 6 MCPs registered // gemini implicit caching ~58% hit.'
+    color: 'green', status: 'ONLINE',
+    info: 'systemd unit hermes-gateway.service // ExecStartPre healthcheck // 6 MCPs registered // gemini implicit caching ~58% hit.',
+    stats: [
+      ['version', 'v0.12.0'],
+      ['systemd', 'hermes-gateway.service'],
+      ['mcps', '6 registered'],
+      ['cache hit', '~58%']
+    ],
+    connects: ['kali']
   },
   'batou-svc': {
     title: 'BATOU // FIELD OPERATIVE', sub: 'F-002',
-    color: 'green',
-    info: 'gemini-2.5-flash via OpenRouter // SOUL.md routing 3-fuentes // Honcho dialectic activado // Telegram bridge open.'
+    color: 'green', status: 'ONLINE',
+    info: 'gemini-2.5-flash via OpenRouter // SOUL.md routing 3-fuentes // Honcho dialectic activado // Telegram bridge open.',
+    stats: [
+      ['model', 'gemini-2.5-flash'],
+      ['router', 'OpenRouter'],
+      ['memory', 'Honcho // workspace=batou'],
+      ['bridge', 'Telegram // open']
+    ],
+    connects: ['kali']
   }
 };
 
@@ -1621,6 +1671,75 @@ function showNodeDossier(id){
     <div class="dossier-bio">${info.info}</div>
   `;
   dos.classList.remove('hidden');
+}
+
+function closeNodeModal(){
+  const m = document.getElementById('nodeModal');
+  if (m) m.remove();
+}
+
+function showNodeExpanded(id){
+  const info = NODE_INFO[id];
+  if (!info) return;
+  closeNodeModal();
+  const cls = info.color === 'cyan' ? 'cyan' : '';
+  const stats = (info.stats || []).map(([k, v]) =>
+    '<dt>' + escHtml(k) + '</dt><dd>' + escHtml(v) + '</dd>'
+  ).join('');
+  const connects = (info.connects || []).map(cid => {
+    const c = NODE_INFO[cid];
+    if (!c) return '';
+    const ccls = c.color === 'cyan' ? ' cyan' : '';
+    return '<button class="node-conn-btn' + ccls + '" data-jump="' + escHtml(cid) + '" type="button">' + escHtml(c.title) + ' <span class="arrow">→</span></button>';
+  }).join('');
+  const status = info.status || 'UNKNOWN';
+  const statusCls = status.toLowerCase().replace(/\s+/g, '-');
+
+  const modal = document.createElement('div');
+  modal.id = 'nodeModal';
+  modal.className = 'node-modal ' + cls;
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.innerHTML =
+    '<div class="node-modal-card ' + cls + '">' +
+      '<button class="node-modal-close" type="button" aria-label="Close">[ESC] CLOSE</button>' +
+      '<div class="node-modal-tag">// network topology node</div>' +
+      '<div class="node-modal-header">' +
+        '<div class="node-modal-name">' + escHtml(info.title) + '</div>' +
+        '<span class="node-status status-' + escHtml(statusCls) + '">' + escHtml(status) + '</span>' +
+      '</div>' +
+      '<div class="node-modal-sub">' + escHtml(info.sub) + '</div>' +
+      '<p class="node-modal-bio">' + escHtml(info.info) + '</p>' +
+      (stats ? '<div class="node-modal-section-h">// telemetry</div><dl class="node-modal-stats">' + stats + '</dl>' : '') +
+      (connects ? '<div class="node-modal-section-h">// links</div><div class="node-modal-conns">' + connects + '</div>' : '') +
+      '<div class="node-modal-actions">' +
+        '<button class="node-modal-action" data-act="ping" type="button">[PING]</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(modal);
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeNodeModal();
+  });
+  modal.querySelector('.node-modal-close').addEventListener('click', closeNodeModal);
+  modal.querySelectorAll('.node-conn-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.jump;
+      const node = document.querySelector('#topo .node[data-node="' + CSS.escape(target) + '"]');
+      if (node) pingSingleNode(node);
+      showNodeExpanded(target);
+      beep(660, 0.04, 'square');
+    });
+  });
+  const pingBtn = modal.querySelector('.node-modal-action[data-act="ping"]');
+  if (pingBtn){
+    pingBtn.addEventListener('click', () => {
+      const node = document.querySelector('#topo .node[data-node="' + CSS.escape(id) + '"]');
+      if (node) pingSingleNode(node);
+      pushOpsCustom('topology', 'ok', id + ' // pinged');
+      beep(880, 0.05, 'square');
+    });
+  }
 }
 
 function pingSingleNode(node){
@@ -1641,7 +1760,7 @@ function attachTopologyHandlers(){
     const id = n.getAttribute('data-node');
     n.addEventListener('click', (e) => {
       pingSingleNode(n);
-      showNodeDossier(id);
+      showNodeExpanded(id);
     });
     n.addEventListener('mouseenter', (e) => {
       if (nodeTooltip) nodeTooltip.remove();
@@ -2583,6 +2702,7 @@ function fillCmd(cmd){
 function closeAllOverlays(){
   closeDossier();
   closeHelp();
+  closeNodeModal();
   if (document.querySelector('.dive-overlay')) exitDive();
   ['.sac', '.seele', '.codec-call', '.atfield-overlay', '.pattern-alert', '.cardboard',
    '.eva-overlay', '.leliel-shadow', '.leliel-label', '.iruel-overlay', '.iruel-label', '.third-impact', '.node-tooltip',
@@ -2621,11 +2741,73 @@ function submitCommand(){
   }
   if (EGG_SEQS[cmd]){
     EGG_SEQS[cmd]();
+    markEggDiscovered(cmd);
     input.value = '';
     beep(880, 0.05, 'square');
   } else {
     triggerYouDied(cmd);
     input.value = '';
+  }
+}
+
+/* ============= DISCOVERY COUNTER ============= */
+const DISCOVERED_KEY = 's9_discovered';
+let discoveredEggs = new Set();
+
+function loadDiscovered(){
+  try {
+    const raw = localStorage.getItem(DISCOVERED_KEY);
+    if (raw){
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) discoveredEggs = new Set(arr.filter(s => typeof s === 'string'));
+    }
+  } catch(_){}
+}
+
+function saveDiscovered(){
+  try { localStorage.setItem(DISCOVERED_KEY, JSON.stringify([...discoveredEggs])); } catch(_){}
+}
+
+function totalEggs(){
+  // Count canonical egg keys (excludes ?, help, and aliases-of-aliases — but aliases ARE counted as separate
+  // discoverable commands because users type them as different things in the help list)
+  return Object.keys(EGG_SEQS).length;
+}
+
+function updateCounterUI(flashNew){
+  const total = totalEggs();
+  const val = document.getElementById('cmdCounterVal');
+  const tot = document.getElementById('cmdCounterTotal');
+  const wrap = document.getElementById('cmdCounter');
+  if (!val || !tot || !wrap) return;
+  val.textContent = String(discoveredEggs.size);
+  tot.textContent = String(total);
+  if (flashNew){
+    wrap.classList.add('flash');
+    setTimeout(() => wrap.classList.remove('flash'), 800);
+  }
+  if (discoveredEggs.size >= total){
+    wrap.classList.add('mastered');
+  }
+}
+
+function markEggDiscovered(cmd){
+  if (!cmd || discoveredEggs.has(cmd)) { updateCounterUI(false); return; }
+  const total = totalEggs();
+  discoveredEggs.add(cmd);
+  saveDiscovered();
+  const next = discoveredEggs.size;
+  updateCounterUI(true);
+  // celebrate certain milestones
+  if (next === total){
+    pushOpsCustom('discovery', 'ok', 'all eggs discovered // master operator');
+    setTimeout(() => beep(1320, 0.08, 'square'), 100);
+    setTimeout(() => beep(1760, 0.08, 'square'), 220);
+    setTimeout(() => beep(2200, 0.12, 'square'), 360);
+  } else if (next % 10 === 0){
+    pushOpsCustom('discovery', 'ok', 'milestone // ' + next + ' eggs found');
+  } else {
+    pushOpsCustom('discovery', 'ok', cmd + ' // discovered (' + next + '/' + total + ')');
   }
 }
 
@@ -2736,7 +2918,8 @@ function renderOrders(){
     for (const o of orders){
       const doneCls = o.status === 'DONE' ? ' is-done' : '';
       html +=
-        '<div class="order-row' + doneCls + '" data-id="' + escHtml(o.id) + '">' +
+        '<div class="order-row' + doneCls + '" data-id="' + escHtml(o.id) + '" draggable="true">' +
+          '<span class="order-handle" aria-hidden="true">⋮⋮</span>' +
           '<span class="order-num">' + fmtOpNum(o.num) + '</span>' +
           '<span class="order-pill prio prio-' + o.priority.toLowerCase() + '" data-action="prio" tabindex="0" role="button" aria-label="Priority ' + o.priority + ', click to cycle">' + o.priority + '</span>' +
           '<span class="order-pill status status-' + o.status.toLowerCase() + '" data-action="status" tabindex="0" role="button" aria-label="Status ' + o.status + ', click to cycle">' + o.status + '</span>' +
@@ -2868,6 +3051,80 @@ function bindOrdersBoard(){
     e.preventDefault();
     const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\s+/g, ' ').trim();
     document.execCommand('insertText', false, text.slice(0, ORDER_TITLE_MAX));
+  });
+
+  bindOrderDrag(board);
+}
+
+let draggingOrderId = null;
+function bindOrderDrag(board){
+  if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
+
+  function clearDragMarks(){
+    board.querySelectorAll('.order-row').forEach(r => {
+      r.classList.remove('dragging', 'drag-over-top', 'drag-over-bottom');
+    });
+  }
+
+  board.addEventListener('dragstart', (e) => {
+    const row = e.target.closest && e.target.closest('.order-row');
+    if (!row) return;
+    // don't start drag if user is editing the title (contenteditable focused)
+    if (e.target.classList && e.target.classList.contains('order-title') && document.activeElement === e.target){
+      e.preventDefault();
+      return;
+    }
+    draggingOrderId = row.dataset.id;
+    row.classList.add('dragging');
+    if (e.dataTransfer){
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', draggingOrderId); } catch(_){}
+    }
+  });
+
+  board.addEventListener('dragover', (e) => {
+    if (!draggingOrderId) return;
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+    const row = e.target.closest && e.target.closest('.order-row');
+    if (!row || row.dataset.id === draggingOrderId) return;
+    const rect = row.getBoundingClientRect();
+    const after = (e.clientY - rect.top) > rect.height / 2;
+    board.querySelectorAll('.order-row').forEach(r => r.classList.remove('drag-over-top', 'drag-over-bottom'));
+    row.classList.add(after ? 'drag-over-bottom' : 'drag-over-top');
+  });
+
+  board.addEventListener('dragleave', (e) => {
+    if (!board.contains(e.relatedTarget)){
+      board.querySelectorAll('.order-row').forEach(r => r.classList.remove('drag-over-top', 'drag-over-bottom'));
+    }
+  });
+
+  board.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (!draggingOrderId){ clearDragMarks(); return; }
+    const target = e.target.closest && e.target.closest('.order-row');
+    if (!target || target.dataset.id === draggingOrderId){ clearDragMarks(); draggingOrderId = null; return; }
+    const fromIdx = orders.findIndex(o => o.id === draggingOrderId);
+    const toIdx = orders.findIndex(o => o.id === target.dataset.id);
+    if (fromIdx < 0 || toIdx < 0){ clearDragMarks(); draggingOrderId = null; return; }
+    const rect = target.getBoundingClientRect();
+    const after = (e.clientY - rect.top) > rect.height / 2;
+    const item = orders.splice(fromIdx, 1)[0];
+    let insertAt;
+    if (fromIdx < toIdx) insertAt = after ? toIdx : toIdx - 1;
+    else insertAt = after ? toIdx + 1 : toIdx;
+    orders.splice(insertAt, 0, item);
+    saveOrders();
+    renderOrders();
+    pushOpsCustom('orders', 'ok', fmtOpNum(item.num) + ' // reordered');
+    beep(550, 0.05, 'square');
+    draggingOrderId = null;
+  });
+
+  board.addEventListener('dragend', () => {
+    clearDragMarks();
+    draggingOrderId = null;
   });
 }
 
@@ -3143,6 +3400,8 @@ function startMainLoops(){
   bindOrdersBoard();
   startConfetti();
   showAudioHint();
+  loadDiscovered();
+  updateCounterUI(false);
   bindCodecRows();
   bindMotherBase();
 
