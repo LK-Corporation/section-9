@@ -3,6 +3,144 @@ const PREFERS_REDUCED_MOTION = typeof window !== 'undefined'
   && window.matchMedia
   && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* ============= I18N (minimal) =============
+ * The HUD lang is read from <html lang>. Most prose / panel labels live in
+ * static HTML and have a parallel index.es.html / index.jp.html. This dict
+ * covers strings injected by JS at runtime (boot text, hints, ops log,
+ * greetings, magi queries, quotes, alerts).
+ */
+const LANG = (() => {
+  const l = (document.documentElement.lang || 'en').toLowerCase();
+  if (l.startsWith('es')) return 'es';
+  if (l.startsWith('ja') || l.startsWith('jp')) return 'ja';
+  return 'en';
+})();
+
+const I18N = {
+  bootLines: {
+    en: ['Wake up, Operator...', 'The Matrix has you...', 'Follow the white rabbit.'],
+    es: ['Despierta, operador...', 'La Matrix te tiene...', 'Sigue al conejo blanco.'],
+    ja: ['起きて、オペレータ…', 'マトリックスはあなたを掴んでいる…', '白うさぎを追え。']
+  },
+  hintLabel: { en: 'HINT: try', es: 'PISTA: prueba', ja: 'ヒント：' },
+  hintConnector: { en: '//', es: '//', ja: '·' },
+  alertClear: { en: 'CLEAR', es: 'DESPEJADO', ja: 'クリア' },
+  alertAlert: { en: 'ALERT', es: 'ALERTA', ja: 'アラート' },
+  awaitingQuery: { en: 'AWAITING QUERY', es: 'ESPERANDO CONSULTA', ja: 'クエリ待機中' },
+  firstTime: { en: 'first time', es: 'primera vez', ja: '初回' },
+  syncing: { en: 'SYNCING...', es: 'SINCRONIZANDO...', ja: '同期中…' },
+  visitCount: { en: 'visit count', es: 'nº de visitas', ja: '訪問回数' },
+  lastVisit: { en: 'last visit', es: 'última visita', ja: '最終訪問' },
+  session: { en: 'session', es: 'sesión', ja: 'セッション' },
+  active: { en: 'active', es: 'activa', ja: 'アクティブ' },
+  signal: { en: 'signal', es: 'señal', ja: '信号' },
+  bars: { en: 'bars', es: 'barras', ja: '本' },
+  deepDiveProgress: { en: 'DEEP DIVE IN PROGRESS', es: 'INMERSIÓN PROFUNDA EN CURSO', ja: 'ディープ・ダイブ実行中' },
+  deepDiveDesktopOnly: {
+    en: 'DEEP DIVE // DESKTOP ONLY · INSUFFICIENT BANDWIDTH',
+    es: 'INMERSIÓN PROFUNDA // SOLO ESCRITORIO · ANCHO DE BANDA INSUFICIENTE',
+    ja: 'ディープ・ダイブ // デスクトップ専用 · 帯域幅不足'
+  },
+  greetings: {
+    en: [
+      { line: 'GHOST-LINE STABLE', sub: 'all systems nominal' },
+      { line: 'OPERATOR ONLINE', sub: 'tactical channel open' },
+      { line: 'CYBER-BRAIN SYNCED', sub: 'no anomalies detected' },
+      { line: 'DEEP DIVE READY', sub: 'kali node responsive' },
+      { line: 'HOLDING POSITION', sub: 'awaiting orders' }
+    ],
+    es: [
+      { line: 'GHOST-LINE ESTABLE', sub: 'todos los sistemas nominales' },
+      { line: 'OPERADOR EN LÍNEA', sub: 'canal táctico abierto' },
+      { line: 'CIBERCEREBRO SINCRONIZADO', sub: 'sin anomalías detectadas' },
+      { line: 'INMERSIÓN PROFUNDA LISTA', sub: 'nodo kali respondiendo' },
+      { line: 'POSICIÓN MANTENIDA', sub: 'esperando órdenes' }
+    ],
+    ja: [
+      { line: 'ゴーストライン安定', sub: 'すべてのシステム正常' },
+      { line: 'オペレータ・オンライン', sub: '戦術チャネル開通' },
+      { line: '電脳同期完了', sub: '異常なし' },
+      { line: 'ディープ・ダイブ準備完了', sub: 'kali ノード応答中' },
+      { line: '位置を維持', sub: '指令待機' }
+    ]
+  },
+  // Operations log — only the msg gets translated; src remains the literal service name.
+  opsTemplates: {
+    en: [
+      { src: 'vault-bridge', tag: 'ok', msg: 'read_page // batou queried "longevidad"' },
+      { src: 'vault-bridge', tag: 'ok', msg: 'list_pages // 153 active' },
+      { src: 'hermes-gw', tag: 'ok', msg: 'healthcheck // OK' },
+      { src: 'hermes-gw', tag: 'ok', msg: 'mcp tool dispatch // notify-voltron' },
+      { src: 'watchdog', tag: 'ok', msg: 'voltron // hibernating // OK' },
+      { src: 'watchdog', tag: 'ok', msg: 'patrol cycle complete // 3 services up' },
+      { src: 'watchdog', tag: 'warn', msg: 'voltron silent // expected, ignore' },
+      { src: 'honcho', tag: 'ok', msg: 'dialectic query // pattern: cyberpunk' },
+      { src: 'honcho', tag: 'ok', msg: 'memory write // session 14' },
+      { src: 'notify-voltron', tag: 'ok', msg: 'telegram push // batou → brus' },
+      { src: 'cve-lookup', tag: 'ok', msg: 'standby // 0 queries this hour' },
+      { src: 'kali-recon', tag: 'ok', msg: 'standby // tachikoma napping' },
+      { src: 'web-recon', tag: 'ok', msg: 'standby // surface unchanged' },
+      { src: 'claude-deep', tag: 'ok', msg: 'reasoning ready // sonnet-4-6 awake' },
+      { src: 'tailnet', tag: 'ok', msg: 'mesh OK // 2 nodes // private' },
+      { src: 'sops', tag: 'ok', msg: 'envelope sealed // age master OK' },
+      { src: 'kdbx', tag: 'ok', msg: 'vault locked // last access 2h ago' },
+      { src: 'scout-meta', tag: 'ok', msg: 'next run // monday 09:00' },
+      { src: 'scout-business', tag: 'ok', msg: 'next run // friday 09:00' },
+      { src: 'backup', tag: 'ok', msg: 'next canary // sunday 04:00' }
+    ],
+    es: [
+      { src: 'vault-bridge', tag: 'ok', msg: 'read_page // batou consultó "longevidad"' },
+      { src: 'vault-bridge', tag: 'ok', msg: 'list_pages // 153 activas' },
+      { src: 'hermes-gw', tag: 'ok', msg: 'healthcheck // OK' },
+      { src: 'hermes-gw', tag: 'ok', msg: 'dispatch de tool mcp // notify-voltron' },
+      { src: 'watchdog', tag: 'ok', msg: 'voltron // hibernando // OK' },
+      { src: 'watchdog', tag: 'ok', msg: 'ciclo de patrulla completo // 3 servicios up' },
+      { src: 'watchdog', tag: 'warn', msg: 'voltron en silencio // esperado, ignorar' },
+      { src: 'honcho', tag: 'ok', msg: 'consulta dialéctica // pattern: cyberpunk' },
+      { src: 'honcho', tag: 'ok', msg: 'escritura en memoria // sesión 14' },
+      { src: 'notify-voltron', tag: 'ok', msg: 'push telegram // batou → brus' },
+      { src: 'cve-lookup', tag: 'ok', msg: 'standby // 0 consultas esta hora' },
+      { src: 'kali-recon', tag: 'ok', msg: 'standby // tachikoma echando la siesta' },
+      { src: 'web-recon', tag: 'ok', msg: 'standby // superficie sin cambios' },
+      { src: 'claude-deep', tag: 'ok', msg: 'razonamiento listo // sonnet-4-6 despierto' },
+      { src: 'tailnet', tag: 'ok', msg: 'mesh OK // 2 nodos // privado' },
+      { src: 'sops', tag: 'ok', msg: 'sobre sellado // age master OK' },
+      { src: 'kdbx', tag: 'ok', msg: 'vault bloqueado // último acceso hace 2h' },
+      { src: 'scout-meta', tag: 'ok', msg: 'próxima // lunes 09:00' },
+      { src: 'scout-business', tag: 'ok', msg: 'próxima // viernes 09:00' },
+      { src: 'backup', tag: 'ok', msg: 'próximo canary // domingo 04:00' }
+    ],
+    ja: [
+      { src: 'vault-bridge', tag: 'ok', msg: 'read_page // batou が「longevidad」を照会' },
+      { src: 'vault-bridge', tag: 'ok', msg: 'list_pages // アクティブ 153' },
+      { src: 'hermes-gw', tag: 'ok', msg: 'healthcheck // OK' },
+      { src: 'hermes-gw', tag: 'ok', msg: 'mcp ツール・ディスパッチ // notify-voltron' },
+      { src: 'watchdog', tag: 'ok', msg: 'voltron // 休眠中 // OK' },
+      { src: 'watchdog', tag: 'ok', msg: '巡回サイクル完了 // 3 サービス稼働' },
+      { src: 'watchdog', tag: 'warn', msg: 'voltron 無応答 // 想定内、無視' },
+      { src: 'honcho', tag: 'ok', msg: '対話クエリ // pattern: cyberpunk' },
+      { src: 'honcho', tag: 'ok', msg: '記憶書き込み // セッション 14' },
+      { src: 'notify-voltron', tag: 'ok', msg: 'telegram プッシュ // batou → brus' },
+      { src: 'cve-lookup', tag: 'ok', msg: 'standby // 当時間のクエリ 0 件' },
+      { src: 'kali-recon', tag: 'ok', msg: 'standby // タチコマは昼寝中' },
+      { src: 'web-recon', tag: 'ok', msg: 'standby // 表面に変化なし' },
+      { src: 'claude-deep', tag: 'ok', msg: '推論準備完了 // sonnet-4-6 起動済' },
+      { src: 'tailnet', tag: 'ok', msg: 'mesh OK // 2 ノード // プライベート' },
+      { src: 'sops', tag: 'ok', msg: 'エンベロープ封印 // age master OK' },
+      { src: 'kdbx', tag: 'ok', msg: 'vault ロック中 // 最終アクセス 2 時間前' },
+      { src: 'scout-meta', tag: 'ok', msg: '次回実行 // 月曜 09:00' },
+      { src: 'scout-business', tag: 'ok', msg: '次回実行 // 金曜 09:00' },
+      { src: 'backup', tag: 'ok', msg: '次回 canary // 日曜 04:00' }
+    ]
+  }
+};
+
+function t(key){
+  const e = I18N[key];
+  if (!e) return '';
+  return (e[LANG] !== undefined ? e[LANG] : e.en);
+}
+
 /* ============= DATA ============= */
 
 const SQUAD = [
@@ -135,28 +273,7 @@ const QUOTES = [
   { t: 'Your ghost is what you decide it is.', a: 'BATOU // GITS' }
 ];
 
-const OPS_TEMPLATES = [
-  { src: 'vault-bridge', tag: 'ok', msg: 'read_page // batou queried "longevidad"' },
-  { src: 'vault-bridge', tag: 'ok', msg: 'list_pages // 153 active' },
-  { src: 'hermes-gw', tag: 'ok', msg: 'healthcheck // OK' },
-  { src: 'hermes-gw', tag: 'ok', msg: 'mcp tool dispatch // notify-voltron' },
-  { src: 'watchdog', tag: 'ok', msg: 'voltron // hibernating // OK' },
-  { src: 'watchdog', tag: 'ok', msg: 'patrol cycle complete // 3 services up' },
-  { src: 'watchdog', tag: 'warn', msg: 'voltron silent // expected, ignore' },
-  { src: 'honcho', tag: 'ok', msg: 'dialectic query // pattern: cyberpunk' },
-  { src: 'honcho', tag: 'ok', msg: 'memory write // session 14' },
-  { src: 'notify-voltron', tag: 'ok', msg: 'telegram push // batou → brus' },
-  { src: 'cve-lookup', tag: 'ok', msg: 'standby // 0 queries this hour' },
-  { src: 'kali-recon', tag: 'ok', msg: 'standby // tachikoma napping' },
-  { src: 'web-recon', tag: 'ok', msg: 'standby // surface unchanged' },
-  { src: 'claude-deep', tag: 'ok', msg: 'reasoning ready // sonnet-4-6 awake' },
-  { src: 'tailnet', tag: 'ok', msg: 'mesh OK // 2 nodes // private' },
-  { src: 'sops', tag: 'ok', msg: 'envelope sealed // age master OK' },
-  { src: 'kdbx', tag: 'ok', msg: 'vault locked // last access 2h ago' },
-  { src: 'scout-meta', tag: 'ok', msg: 'next run // monday 09:00' },
-  { src: 'scout-business', tag: 'ok', msg: 'next run // friday 09:00' },
-  { src: 'backup', tag: 'ok', msg: 'next canary // sunday 04:00' }
-];
+const OPS_TEMPLATES = t('opsTemplates');
 
 /* ============= TIME UTILS ============= */
 function fmtUptime(since){
@@ -413,11 +530,7 @@ async function runBoot(){
 
   showBootPhase(1);
   await sleep(500);
-  await typewriter('bp1Text', [
-    'Wake up, Operator...',
-    'The Matrix has you...',
-    'Follow the white rabbit.'
-  ], 60);
+  await typewriter('bp1Text', t('bootLines'), 60);
   await sleep(1100);
 
   showBootPhase(2);
@@ -959,7 +1072,7 @@ function triggerAlertFlash(){
   const w = document.getElementById('alertWidget');
   const v = document.getElementById('alertValue');
   w.classList.add('alert');
-  v.textContent = 'ALERT';
+  v.textContent = t('alertAlert');
   const overlay = document.createElement('div');
   overlay.className = 'mgs-alert';
   overlay.innerHTML = '<div class="alert-mark">!</div>';
@@ -967,7 +1080,7 @@ function triggerAlertFlash(){
   setTimeout(() => overlay.remove(), 600);
   setTimeout(() => {
     w.classList.remove('alert');
-    v.textContent = 'CLEAR';
+    v.textContent = t('alertClear');
   }, 4000);
 }
 
@@ -1243,7 +1356,7 @@ function personalizedGreeting(){
   const h = new Date().getHours();
   let line, sub;
   if (h >= 0 && h < 5){
-    line = 'DEEP DIVE IN PROGRESS';
+    line = t('deepDiveProgress');
     sub = 'late-night operator detected';
   } else if (h < 8){
     line = 'WAKE UP, BRUS...';
@@ -1332,7 +1445,7 @@ function tickSync(){
 
 function loadVisitorProfile(){
   let count = 1;
-  let lastStr = 'first time';
+  let lastStr = t('firstTime');
   try {
     const last = localStorage.getItem('s9_last');
     const cnt = parseInt(localStorage.getItem('s9_count') || '0', 10);
@@ -1556,7 +1669,7 @@ function triggerDive(){
   if (diveActive) return;
   // WebGL scene + Three.js (~600KB) is too heavy for phones — degrade gracefully
   if (window.innerWidth < 900 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){
-    showEgg('DEEP DIVE // DESKTOP ONLY · INSUFFICIENT BANDWIDTH');
+    showEgg(t('deepDiveDesktopOnly'));
     beep(220, 0.3, 'sawtooth');
     return;
   }
@@ -2762,7 +2875,7 @@ function rotateHint(){
   if (!el) return;
   el.style.opacity = 0;
   setTimeout(() => {
-    el.innerHTML = 'HINT: try <b>' + h[0] + '</b> // ' + h[1];
+    el.innerHTML = t('hintLabel') + ' <b>' + h[0] + '</b> ' + t('hintConnector') + ' ' + h[1];
     el.style.opacity = 1;
   }, 400);
 }
@@ -3403,13 +3516,7 @@ function flashPanel(el){
   setTimeout(() => el.classList.remove('flash'), 420);
 }
 
-const GREETINGS_CYCLE = [
-  { line: 'GHOST-LINE STABLE', sub: 'all systems nominal' },
-  { line: 'OPERATOR ONLINE', sub: 'tactical channel open' },
-  { line: 'CYBER-BRAIN SYNCED', sub: 'no anomalies detected' },
-  { line: 'DEEP DIVE READY', sub: 'kali node responsive' },
-  { line: 'HOLDING POSITION', sub: 'awaiting orders' }
-];
+const GREETINGS_CYCLE = t('greetings');
 let greetingCycleIdx = -1;
 
 function panelOperator(el){
@@ -3474,17 +3581,17 @@ function panelFingerprint(el){
 
 function panelProfile(el){
   flashPanel(el);
-  let count = 1, last = 'first time';
+  let count = 1, last = t('firstTime');
   try {
     count = parseInt(localStorage.getItem('s9_count') || '1', 10);
     const lastIso = localStorage.getItem('s9_last');
     if (lastIso) last = new Date(lastIso).toLocaleString();
   } catch(_){}
   showLpPopout(el, '', 'OPERATOR PROFILE', [
-    ['visit count', '#' + count],
-    ['last visit', last],
-    ['session', 'active'],
-    ['signal', '4 bars']
+    [t('visitCount'), '#' + count],
+    [t('lastVisit'), last],
+    [t('session'), t('active')],
+    [t('signal'), '4 ' + t('bars')]
   ]);
   beep(660, 0.04, 'square');
 }

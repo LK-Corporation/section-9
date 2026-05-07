@@ -162,6 +162,27 @@
   .placard-l { display: flex; align-items: center; gap: 12px; }
   .placard-c { display: flex; justify-content: center; }
   .placard-r { display: flex; align-items: center; justify-content: flex-end; gap: 14px; font-size: 11px; }
+  .placard-r .lang-toggles { display: flex; gap: 5px; }
+  .placard-r .lang-toggle {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    color: var(--cyan);
+    text-decoration: none;
+    border: 1px solid var(--cyan-dim);
+    padding: 4px 9px;
+    background: rgba(79,184,204,0.06);
+    transition: all 0.15s;
+  }
+  .placard-r .lang-toggle:hover {
+    border-color: var(--cyan);
+    background: rgba(79,184,204,0.18);
+    box-shadow: 0 0 6px rgba(79,184,204,0.35);
+  }
+  .placard-r .lang-toggle:focus-visible { outline: 1px solid var(--cyan); outline-offset: 2px; }
+  @media (max-width: 600px) {
+    .placard-r .lang-toggle { font-size: 8px; padding: 3px 6px; letter-spacing: 1.5px; }
+  }
   .dot {
     width: 8px; height: 8px;
     background: var(--green);
