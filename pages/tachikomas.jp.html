@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#060809">
+<meta name="color-scheme" content="dark">
+<title>タチコマ部隊 // SECTION 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="page.css">
+<script src="page.js" defer></script>
+</head>
+<body class="page">
+
+<header class="page-header">
+  <a href="../index.html" class="back-link">[ ← HUDへ戻る ]</a>
+  <span class="page-title">タチコマ部隊 // 資料</span>
+  <span class="page-id">// 02ページ</span>
+  <nav class="page-nav">
+    <a href="tachikomas.jp.html" class="active">tachikomas</a>
+    <a href="codex.jp.html">codex</a>
+    <a href="foxhound.jp.html">foxhound</a>
+    <a href="instrumentality.jp.html">instrumentality</a>
+    <a href="puppetmaster.jp.html">puppet master</a>
+    <a href="lain.jp.html">lain</a>
+    <a href="about.jp.html">about</a>
+  </nav>
+  <div class="lang-toggles">
+    <a href="tachikomas.html" class="lang-toggle" lang="en" hreflang="en" title="Switch to English">[ EN ]</a>
+    <a href="tachikomas.es.html" class="lang-toggle" lang="es" hreflang="es" title="Cambiar a castellano">[ ES ]</a>
+  </div>
+</header>
+
+<main class="page-content">
+
+  <section class="page-hero">
+    <div class="page-hero-tag">SECTION 9 // 電脳化部 // 思考戦車ロースタ</div>
+    <h1 class="page-hero-h1">タチコマ<small>MCP 思考戦車 · 6機配備 · 2ホスト</small></h1>
+    <p class="page-hero-lead">
+      2 つのホストにまたがって運用される、AI 強化型のスパイダー戦車 6 機。各機は単一の能力を <span class="defterm green" data-def="shared/src/ssh.mjs に対するパッチ（Tier 4-P リファクタ、2026-04-30）。タチコマが Hermes Gateway と同じホストにあるとき、SSH 層をバイパスする。呼び出しが速くなり、リモートのハンドシェイクも要らない。各 MCP はローカルの stdio プロセスとして動き、Hermes はそれをローカルのハンドルとして解決する。">EXEC_MODE=local</span> プロトコルで包んでいる — <span class="defterm green" data-def="MCP のディスパッチ層。タチコマごとのルーティング・テーブルを保持する。Batou が cve-lookup.query(...) を呼び出すと、Hermes はその呼び出しを同じホスト上のローカル stdio ハンドルに解決し、結果を返す。Kali 上で systemd ユニット（hermes-gateway.service）として走る。">Hermes Gateway</span> がリクエストをディスパッチし、タチコマは SSH を往復することなくローカルで解決する。ほとんどはディープダイブ・ノード（Kali VM）で走る；もっとも人気のある一機はオペレータの Windows ホストで走る、なぜなら<span class="defterm" data-def="ソフトな知識のマークダウン Wiki — エンティティ、概念、プロジェクト、生のトランスクリプト。アクティブなページは ~153。オペレータの長期記憶の唯一のソース；電脳化部は、自明でない決定の前に必ずここを参照する。">Vault</span> がそこに住んでいるから。
+    </p>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">01</span> 稼働中のユニット</h2>
+
+    <div class="dossier-list">
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-006 // 偵察</div>
+        <div class="dossier-item-name">CVE-LOOKUP</div>
+        <dl class="dossier-item-grid">
+          <dt>ホスト</dt><dd>kali // ディープダイブ</dd>
+          <dt>スタック</dt><dd>node.js stdio MCP</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>能力</dt><dd>NVD 問い合わせ · CVSS スコアリング · パッチのヒント</dd>
+          <dt>uptime</dt><dd>tier 4-P 以来（2026-04-30）</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>「¡Hola Brus! Hoy busco CVEs y los explico bonito.」</em><br>
+          NVD/MITRE のフィードを包む。CVE-ID を与えると、深刻度、ベクター、ベンダーのアドバイザリ、それから一行の平易な説明を返す。普段は待機 — Batou が脆弱性について尋ねたときだけ起動する。
+        </p>
+      </article>
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-007 // 偵察</div>
+        <div class="dossier-item-name">KALI-RECON</div>
+        <dl class="dossier-item-grid">
+          <dt>ホスト</dt><dd>kali // ディープダイブ</dd>
+          <dt>スタック</dt><dd>シェル・ラッパ（nmap, whois, dig）</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>能力</dt><dd>nmap · whois · DNS recon</dd>
+          <dt>注</dt><dd>タチコマは昼寝中（0 ops）</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>「¡Brus-san! Tengo nmap y ganas de scanear.」</em><br>
+          標準的な recon CLI ツール群に構造化されたラッパを提供して、オペレータが手動でシェルに降りなくて済むようにする。デフォルトは保守的：SYN scan、上位 1000 ポート、レート制限あり。
+        </p>
+      </article>
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-008 // 偵察</div>
+        <div class="dossier-item-name">WEB-RECON</div>
+        <dl class="dossier-item-grid">
+          <dt>ホスト</dt><dd>kali // ディープダイブ</dd>
+          <dt>スタック</dt><dd>node.js + ヘッドレス fetch</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>能力</dt><dd>headers · TLS 監査 · 技術フィンガープリント</dd>
+          <dt>uptime</dt><dd>2026-04-30 以来</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>「Encontré 12 endpoints abiertos esta semana, ¿no? ¡Espera, son cero!」</em><br>
+          ホストの公開アタックサーフェスをマップする：開いているヘッダ、証明書チェーン、フレームワーク検出。JSON を返す。深くはクロールしない — そういう仕事ではない。
+        </p>
+      </article>
+
+      <article class="dossier-item cyan">
+        <div class="dossier-item-tag">T-009 // ブリッジ</div>
+        <div class="dossier-item-name">VAULT-BRIDGE</div>
+        <dl class="dossier-item-grid">
+          <dt>ホスト</dt><dd>win // オペレータ</dd>
+          <dt>スタック</dt><dd>HTTP サービス :3142</dd>
+          <dt>exec</dt><dd>ローカル HTTP（tailnet 経由でクロスホスト）</dd>
+          <dt>能力</dt><dd>read_page · write_page · list_pages</dd>
+          <dt>活動</dt><dd>毎日の ops · 部隊で一番人気</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>「¡Yo sí trabajo! Soy el más popular de la unidad.」</em><br>
+          電脳化部（Kali 上の Batou）と、ソフトな知識の vault（Windows 上の Markdown wiki）をつなぐ橋。部隊の中でもっとも単独取扱量が大きいタチコマ。Watchdog が 60 秒ごとに巡回している。これがなければ、Batou はオペレータの長期記憶に対して盲目になる。
+        </p>
+      </article>
+
+      <article class="dossier-item orange">
+        <div class="dossier-item-tag">T-010 // 通信</div>
+        <div class="dossier-item-name">NOTIFY-VOLTRON</div>
+        <dl class="dossier-item-grid">
+          <dt>ホスト</dt><dd>kali // ディープダイブ</dd>
+          <dt>スタック</dt><dd>HTTP POST → :3141（tailnet）</dd>
+          <dt>exec</dt><dd>EXEC_MODE=local</dd>
+          <dt>能力</dt><dd>Telegram プッシュ · Voltron リレー</dd>
+          <dt>活動</dt><dd>オンデマンドのみ</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>「Yo solo paso mensajes. Soy un cartero feliz.」</em><br>
+          外向き通信ゲートウェイ。Voltron の HTTP エンドポイントに POST し、それが Telegram にリレーする。カナリア・アラート（バックアップ成功、scout 完了）やアドホックな通知に使う。共有の <code>NOTIFY_SECRET</code> による認証。
+        </p>
+      </article>
+
+      <article class="dossier-item">
+        <div class="dossier-item-tag">T-011 // 解析</div>
+        <div class="dossier-item-name">CLAUDE-DEEP</div>
+        <dl class="dossier-item-grid">
+          <dt>ホスト</dt><dd>kali // ディープダイブ</dd>
+          <dt>スタック</dt><dd>claude-code CLI v2.1.126</dd>
+          <dt>モデル</dt><dd>claude-sonnet-4-6</dd>
+          <dt>能力</dt><dd>深い推論 · コンテキスト 50K 文字</dd>
+          <dt>timeout</dt><dd>300秒（120秒からの修正、2026-05-05）</dd>
+          <dt>活動</dt><dd>週次の ops</dd>
+        </dl>
+        <p class="dossier-item-bio">
+          <em>「Cuando Batou no da con algo, me llama. Me siento útil.」</em><br>
+          重い推論のためのフォールバック。フィールド作戦員（Batou、Gemini Flash）が複雑な解析で頭打ちになると、このユニットが Sonnet 4.6 とより長いコンテキスト・ウィンドウで引き受ける。遅いが徹底している。セキュリティ監査、アーキテクチャ・レビュー、ロングフォームの統合に使う。
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">02</span> 連携ドクトリン</h2>
+    <p class="page-text">
+      タチコマは状態を共有しない。各機は純粋関数：入力 → 出力、記憶なし。記憶は彼らをオーケストレーションする<span class="defterm green" data-def="フィールド作戦員 F-002。OpenRouter 経由で gemini-2.5-flash を走らせる。SOUL.md による 3 ソース（vault / honcho / 会話）のルーティング。Telegram ブリッジは開いている。どのタチコマをいつ呼び出すかを決めるオーケストレータ。">電脳化部（Batou）</span>、それから<span class="defterm green" data-def="長期記憶レイヤ。ワークスペース：'batou'。会話バッファでは保持できない、対話のパターンとセッションを越えた文脈を保管する。各ターンで Batou のコンテキストに自動注入され、累積的な記憶を形成する。">Honcho dialectic</span>（長期パターン）、そして<span class="defterm" data-def="ソフトな知識のマークダウン Wiki — エンティティ、概念、プロジェクト、生のトランスクリプト。アクティブなページは ~153。オペレータの長期記憶の唯一のソース；電脳化部は、自明でない決定の前に必ずここを参照する。">Vault</span>（ナレッジベース）に住む。これは意図的 — 各ユニットを置換可能、テスト可能、<em>独立しているが共にある</em>状態に保つ。
+    </p>
+
+    <p class="page-text">
+      Hermes Gateway がディスパッチ・テーブルを持つ。Batou が <code>cve-lookup.query("CVE-2026-12345")</code> を呼ぶと、Hermes はそれを Kali 上のローカル stdio ハンドルに解決する、SSH の往復はない。<code>shared/src/ssh.mjs</code> の <code>EXEC_MODE=local</code> パッチが、タチコマが Gateway と同じ場所にいるときに SSH 層をバイパスする。パッチは <span class="defterm orange" data-def="2026-04-30 のモノレポ・リファクタの内部段階識別子。MCP を Kali に移植し、EXEC_MODE=local バイパスを追加した。同じ場所にいるタチコマに対して SSH 往復のオーバーヘッドを除去した。パッチ前のバックアップは shared/src/ssh.mjs.bak にある。">Tier 4-P リファクタ</span>のあいだに適用された。
+    </p>
+
+    <blockquote class="page-quote">
+      「私たちはスタンドアロンだけど、一緒にいる。」
+      <cite>— タチコマ // Stand Alone Complex（言い換え）</cite>
+    </blockquote>
+  </section>
+
+  <section class="page-section">
+    <h2 class="page-section-h"><span class="num">03</span> 採用 // 空きスロット</h2>
+    <p class="page-text">
+      現在 1 つのスロットが空いている（<code>V-006</code>）。候補のタチコマを現役勤務に昇格させる条件：
+    </p>
+    <ul class="page-text" style="list-style:none;padding-left:14px;">
+      <li>· 単一の能力、よく定義されていること。</li>
+      <li>· ステートレス — 他のユニットと共有された可変状態を持たないこと。</li>
+      <li>· ローカル実行が望ましい（ネットワーク往復を避ける）。</li>
+      <li>· <code>~/logs/&lt;unit&gt;.log</code> に構造化 JSON でログ出力すること。</li>
+      <li>· Hermes のシャットダウンに対して優雅に死ぬこと。</li>
+    </ul>
+    <p class="page-text">
+      現在検討中の候補：金融/スプレッドシート読み取り、カレンダー・ブリッジ、arXiv 取り込みヘルパー。まだ昇格はゼロ — オペレータのドクトリンは <em>追加する前にシンプル化する</em> である。
+    </p>
+  </section>
+
+</main>
+
+<div class="page-watermark cyan" aria-hidden="true">
+  <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2">
+    <ellipse cx="100" cy="60" rx="60" ry="32"/>
+    <circle cx="80" cy="55" r="9"/>
+    <circle cx="120" cy="55" r="9"/>
+    <line x1="50" y1="80" x2="20" y2="140"/>
+    <line x1="80" y1="90" x2="60" y2="150"/>
+    <line x1="120" y1="90" x2="140" y2="150"/>
+    <line x1="150" y1="80" x2="180" y2="140"/>
+    <line x1="20" y1="142" x2="180" y2="142" stroke-dasharray="4 4"/>
+  </svg>
+</div>
+
+<footer class="page-footer">
+  <span class="nerv-mini">
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <path class="leaf" d="M32 4 C46 14 56 28 56 40 C56 52 44 60 32 60 C20 60 8 52 8 40 C8 28 18 14 32 4 Z M32 12 C24 22 18 32 18 42 L46 42 C46 32 40 22 32 12 Z"/>
+    </svg>
+    NERV
+  </span>
+  公安9課 // 公安部 // 電脳化部
+</footer>
+
+</body>
+</html>
