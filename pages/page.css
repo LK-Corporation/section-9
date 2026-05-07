@@ -50,20 +50,26 @@ body.page {
   z-index: 100;
   display: grid;
   grid-template-columns: auto 1fr auto auto;
+  grid-template-areas:
+    "back title id lang"
+    "nav  nav   nav nav";
   align-items: center;
-  gap: 16px;
-  padding: 12px 80px 12px 24px;  /* extra right padding for lang toggle */
+  gap: 8px 16px;
+  padding: 12px 24px;
   background: var(--bg2);
   border-bottom: 1px solid var(--green-dim);
   backdrop-filter: blur(4px);
 }
+.back-link { grid-area: back; }
+.page-title { grid-area: title; }
+.page-id { grid-area: id; }
+.page-nav { grid-area: nav; }
 
 .lang-toggles {
-  position: absolute;
-  top: 12px;
-  right: 16px;
+  grid-area: lang;
   display: flex;
   gap: 5px;
+  justify-self: end;
   z-index: 110;
 }
 .lang-toggle {
@@ -580,14 +586,20 @@ body.page {
 @media (max-width: 720px) {
   .page-header {
     grid-template-columns: 1fr;
-    gap: 8px;
-    padding: 12px 60px 12px 16px;
+    grid-template-areas:
+      "back"
+      "title"
+      "id"
+      "lang"
+      "nav";
+    gap: 6px;
+    padding: 12px 16px;
   }
   .page-hero-h1 { font-size: 32px; letter-spacing: 4px; }
   .page-modal-card { padding: 24px 22px; }
   .page-modal-card .dossier-item-name,
   .page-modal-card .angel-name { font-size: 24px; letter-spacing: 3px; }
-  .lang-toggles { top: 10px; right: 12px; gap: 4px; }
+  .lang-toggles { justify-self: start; gap: 4px; }
   .lang-toggle { font-size: 8px; padding: 3px 6px; letter-spacing: 1.5px; }
 }
 
